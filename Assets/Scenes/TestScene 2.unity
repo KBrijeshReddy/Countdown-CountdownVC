@@ -3404,12 +3404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 8
-  acceleration: 40
-  deceleration: 50
-  airControl: 0.8
   jumpForce: 10
-  fallGravityMultiplier: 2.5
-  jumpCutMultiplier: 0.5
   groundCheck: {fileID: 1902523266}
   groundCheckRadius: 0.2
   groundLayer:
