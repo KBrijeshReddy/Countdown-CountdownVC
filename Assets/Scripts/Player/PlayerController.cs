@@ -41,12 +41,20 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
 
     private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
+{
+    rb = GetComponent<Rigidbody2D>();
 
-        // We control gravity ourselves.
-        rb.gravityScale = 0f;
-    }
+    // We control gravity ourselves
+    rb.gravityScale = 0f;
+
+    // Prevent the player from tunneling through platforms
+    rb.collisionDetectionMode =
+        CollisionDetectionMode2D.Continuous;
+
+    // Prevent unwanted rotation
+    rb.constraints =
+        RigidbodyConstraints2D.FreezeRotation;
+}
 
     private void Update()
     {
@@ -211,20 +219,32 @@ public class PlayerController : MonoBehaviour
     // =========================================================
 
     private void HandleGravity()
+{
+    // If we are standing on the ground,
+    // completely stop downward velocity.
+    if (isGrounded && rb.linearVelocity.y <= 0)
     {
-        float gravity = jumpGravity;
+        rb.linearVelocity = new Vector2(
+            rb.linearVelocity.x,
+            0f
+        );
 
-        // Falling = stronger gravity
-        if (rb.linearVelocity.y < 0)
-        {
-            gravity *= fallGravityMultiplier;
-        }
-
-        rb.linearVelocity +=
-            Vector2.down *
-            gravity *
-            Time.fixedDeltaTime;
+        return;
     }
+
+    float gravity = jumpGravity;
+
+    // Falling = stronger gravity
+    if (rb.linearVelocity.y < 0)
+    {
+        gravity *= fallGravityMultiplier;
+    }
+
+    rb.linearVelocity +=
+        Vector2.down *
+        gravity *
+        Time.fixedDeltaTime;
+}
 
     // =========================================================
     // GROUND CHECK
