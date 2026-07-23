@@ -10,13 +10,26 @@ public class ButtonObject : MonoBehaviour
 
     [Header("Visual")]
     public Color normalColor = Color.white;
+
     public Color pressedColor = Color.green;
 
+    // =========================================================
+    // REFERENCES
+    // =========================================================
+
     private SpriteRenderer spriteRenderer;
+
+    // =========================================================
+    // BUTTON STATE
+    // =========================================================
 
     private bool isPressed;
 
     private float activationTimer;
+
+    // =========================================================
+    // AWAKE
+    // =========================================================
 
     private void Awake()
     {
@@ -26,14 +39,25 @@ public class ButtonObject : MonoBehaviour
         SetPressed(false);
     }
 
+    // =========================================================
+    // UPDATE
+    // =========================================================
+
     private void Update()
     {
+        // Nothing to do if button isn't active.
         if (!isPressed)
+        {
             return;
+        }
 
         // Count down activation time.
         activationTimer -=
             Time.deltaTime;
+
+        // =====================================================
+        // TIMER FINISHED
+        // =====================================================
 
         if (
             activationTimer <= 0f
@@ -44,15 +68,26 @@ public class ButtonObject : MonoBehaviour
     }
 
     // =========================================================
-    // PLAYER TOUCHES BUTTON
+    // PLAYER TOUCHES DETECTION AREA
     // =========================================================
 
-    private void OnTriggerEnter2D(
-        Collider2D other
+    public void PlayerEnteredDetection(
+        Collider2D playerCollider
     )
     {
         if (
-            other.CompareTag("Player")
+            playerCollider == null
+        )
+        {
+            return;
+        }
+
+        // Make sure only the Player
+        // can activate the button.
+        if (
+            playerCollider.CompareTag(
+                "Player"
+            )
         )
         {
             ActivateButton();
@@ -65,26 +100,33 @@ public class ButtonObject : MonoBehaviour
 
     private void ActivateButton()
     {
-        // If already active,
-        // don't activate again.
+        // Already active.
         if (isPressed)
+        {
             return;
+        }
 
-        isPressed = true;
+        // Activate.
+        isPressed =
+            true;
 
-        // Start timer.
+        // Start countdown.
         activationTimer =
             activeDuration;
 
-        // Change color.
-        if (spriteRenderer != null)
+        // Change Button color.
+        if (
+            spriteRenderer != null
+        )
         {
             spriteRenderer.color =
                 pressedColor;
         }
 
-        // Open door.
-        if (connectedDoor != null)
+        // Open Door.
+        if (
+            connectedDoor != null
+        )
         {
             connectedDoor.SetOpen(
                 true
@@ -103,7 +145,10 @@ public class ButtonObject : MonoBehaviour
         isPressed =
             pressed;
 
-        if (spriteRenderer != null)
+        // Update Button visual.
+        if (
+            spriteRenderer != null
+        )
         {
             spriteRenderer.color =
                 isPressed
@@ -111,7 +156,10 @@ public class ButtonObject : MonoBehaviour
                 : normalColor;
         }
 
-        if (connectedDoor != null)
+        // Update Door.
+        if (
+            connectedDoor != null
+        )
         {
             connectedDoor.SetOpen(
                 isPressed

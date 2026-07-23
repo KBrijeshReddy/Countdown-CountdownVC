@@ -3,269 +3,463 @@ using UnityEngine.InputSystem;
 
 public class DraggableObject : MonoBehaviour
 {
-    [Header("Grid")]
+    [Header("References")]
     public GridManager gridManager;
+    public GridObject gridObject;
+    public LevelManager levelManager;
+    public BuyArea buyArea;
 
-    [Header("Pickup Animation")]
-    public float pickupScaleMultiplier = 1.1f;
-    public float pickupAnimationSpeed = 8f;
+    [Header("Dragging")]
+    public Collider2D dragCollider;
 
-    [Header("Placement Colors")]
+    [Header("Visuals")]
+    public float pickupScale = 1.08f;
+
     public Color normalColor = Color.white;
-    public Color validColor = Color.green;
-    public Color invalidColor = Color.red;
 
-    private Camera mainCamera;
-    private GridObject gridObject;
+    public Color validColor =
+        new Color(
+            0.5f,
+            1f,
+            0.5f
+        );
+
+    public Color invalidColor =
+        new Color(
+            1f,
+            0.5f,
+            0.5f
+        );
+
+    // =========================================================
+    // COMPONENTS
+    // =========================================================
+
+    private BuyableObject buyableObject;
 
     private SpriteRenderer spriteRenderer;
 
-    private bool isDragging;
+    private Camera mainCamera;
+
+    // =========================================================
+    // BUY AREA
+    // =========================================================
+
+    private Vector3 buyAreaPosition;
+
+    // =========================================================
+    // SCALE
+    // =========================================================
+
+    private Vector3 originalScale;
+
+    // =========================================================
+    // GRID STATE
+    // =========================================================
+
+    private bool isPlacedOnGrid;
 
     private Vector2Int currentGridPosition;
 
-    private Vector2Int previousValidGridPosition;
+    // =========================================================
+    // DRAG STATE
+    // =========================================================
 
-    // Original scale of the object.
-    private Vector3 originalScale;
+    private bool isDragging;
 
-    // Target scale used for smooth animation.
-    private Vector3 targetScale;
+    private Vector3 dragStartPosition;
+
+    private Vector2Int dragStartGridPosition;
+
+    private bool dragStartedOnGrid;
+
+    // =========================================================
+    // PREVIEW
+    // =========================================================
+
+    private Vector2Int currentPreviewPosition;
+
+    private bool currentPreviewValid;
+
+    // =========================================================
+    // MOUSE OFFSET
+    // =========================================================
+
+    private Vector3 mouseOffset;
+
+    // =========================================================
+    // AWAKE
+    // =========================================================
 
     private void Awake()
     {
-        mainCamera = Camera.main;
-
-        gridObject =
-            GetComponent<GridObject>();
+        mainCamera =
+            Camera.main;
 
         spriteRenderer =
             GetComponent<SpriteRenderer>();
 
-        // Remember original size.
+        buyableObject =
+            GetComponent<BuyableObject>();
+
         originalScale =
             transform.localScale;
 
-        targetScale =
-            originalScale;
-    }
+        buyAreaPosition =
+            transform.position;
 
-    private void Start()
-    {
-        // Find starting grid position.
-        currentGridPosition =
-            gridManager.WorldToObjectGrid(
-                transform.position,
-                gridObject
-            );
+        isPlacedOnGrid =
+            false;
 
-        previousValidGridPosition =
-            currentGridPosition;
+        isDragging =
+            false;
 
-        // Check starting position.
-        if (
-            gridManager.CanPlaceObject(
-                currentGridPosition,
-                gridObject
+        currentPreviewValid =
+            false;
+
+        // =====================================================
+        // AUTO FIND DRAG COLLIDER
+        // =====================================================
+
+        if (dragCollider == null)
+        {
+            Transform dragTransform =
+                transform.Find(
+                    "DragCollider"
+                );
+
+            if (
+                dragTransform != null
             )
+            {
+                dragCollider =
+                    dragTransform.GetComponent<Collider2D>();
+            }
+        }
+
+        // =====================================================
+        // DEBUG
+        // =====================================================
+
+        if (
+            dragCollider == null
         )
         {
-            gridManager.PlaceObject(
-                currentGridPosition,
-                gridObject
-            );
-
-            SnapToGrid(
-                currentGridPosition
-            );
-        }
-        else
-        {
-            Debug.LogWarning(
+            Debug.LogError(
                 gameObject.name +
-                " is outside the grid or overlapping another object."
+                " has no DragCollider assigned!"
             );
         }
+
+        SetColor(
+            normalColor
+        );
     }
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
 
     private void Update()
     {
-        // Smoothly animate scale.
-        transform.localScale =
-            Vector3.Lerp(
-                transform.localScale,
-                targetScale,
-                Time.deltaTime *
-                pickupAnimationSpeed
+        // =====================================================
+        // START DRAG
+        // =====================================================
+
+        if (
+            Mouse.current != null &&
+            Mouse.current.leftButton.wasPressedThisFrame
+        )
+        {
+            CheckForMouseClick();
+        }
+
+        // =====================================================
+        // DRAG
+        // =====================================================
+
+        if (isDragging)
+        {
+            DragObject();
+
+            UpdatePlacementPreview();
+        }
+
+        // =====================================================
+        // RELEASE
+        // =====================================================
+
+        if (
+            Mouse.current != null &&
+            Mouse.current.leftButton.wasReleasedThisFrame
+        )
+        {
+            if (isDragging)
+            {
+                FinishDrag();
+            }
+        }
+    }
+
+    // =========================================================
+    // CHECK MOUSE CLICK
+    // =========================================================
+
+    private void CheckForMouseClick()
+    {
+        // =====================================================
+        // BUY PHASE
+        // =====================================================
+
+        if (
+            levelManager != null &&
+            !levelManager.IsBuyingPhase()
+        )
+        {
+            return;
+        }
+
+        // =====================================================
+        // CAMERA
+        // =====================================================
+
+        if (
+            mainCamera == null
+        )
+        {
+            mainCamera =
+                Camera.main;
+        }
+
+        if (
+            mainCamera == null
+        )
+        {
+            return;
+        }
+
+        // =====================================================
+        // MOUSE WORLD POSITION
+        // =====================================================
+
+        Vector2 mouseScreenPosition =
+            Mouse.current.position.ReadValue();
+
+        Vector3 mouseWorldPosition =
+            mainCamera.ScreenToWorldPoint(
+                new Vector3(
+                    mouseScreenPosition.x,
+                    mouseScreenPosition.y,
+                    Mathf.Abs(
+                        mainCamera.transform.position.z
+                    )
+                )
             );
 
-        if (!isDragging)
-            return;
+        // =====================================================
+        // CHECK DRAG COLLIDER
+        // =====================================================
 
-        DragObject();
+        if (
+            dragCollider == null
+        )
+        {
+            return;
+        }
+
+        bool clicked =
+            dragCollider.OverlapPoint(
+                mouseWorldPosition
+            );
+
+        if (!clicked)
+        {
+            return;
+        }
+
+        // =====================================================
+        // START DRAG
+        // =====================================================
+
+        StartDragging(
+            mouseWorldPosition
+        );
     }
 
     // =========================================================
     // START DRAGGING
     // =========================================================
 
-    private void OnMouseDown()
+    private void StartDragging(
+        Vector3 mouseWorldPosition
+    )
     {
-        isDragging = true;
+        if (isDragging)
+        {
+            return;
+        }
 
-        // Remove object from grid.
-        gridManager.RemoveObject(
-            currentGridPosition,
-            gridObject
-        );
+        // =====================================================
+        // SAVE STATE
+        // =====================================================
 
-        // -----------------------------------------------------
-        // PICKUP SCALE EFFECT
-        // -----------------------------------------------------
+        isDragging =
+            true;
 
-        // Immediately make it slightly bigger.
+        dragStartPosition =
+            transform.position;
+
+        dragStartedOnGrid =
+            isPlacedOnGrid;
+
+        dragStartGridPosition =
+            currentGridPosition;
+
+        // =====================================================
+        // REMOVE FROM GRID
+        // =====================================================
+
+        if (
+            isPlacedOnGrid &&
+            gridManager != null
+        )
+        {
+            gridManager.RemoveObject(
+                currentGridPosition,
+                gridObject
+            );
+        }
+
+        // =====================================================
+        // MOUSE OFFSET
+        // =====================================================
+
+        mouseWorldPosition.z =
+            transform.position.z;
+
+        mouseOffset =
+            transform.position -
+            mouseWorldPosition;
+
+        // =====================================================
+        // SCALE UP
+        // =====================================================
+
         transform.localScale =
             originalScale *
-            pickupScaleMultiplier;
+            pickupScale;
 
-        // Then smoothly return to normal size.
-        targetScale =
-            originalScale;
-
-        // Start with normal color.
         SetColor(
             normalColor
         );
     }
 
     // =========================================================
-    // STOP DRAGGING
-    // =========================================================
-
-    private void OnMouseUp()
-    {
-        isDragging = false;
-
-        // Find the grid position where
-        // the object was released.
-        Vector2Int releasedGridPosition =
-            gridManager.WorldToObjectGrid(
-                transform.position,
-                gridObject
-            );
-
-        // Check entire object.
-        bool validPosition =
-            gridManager.CanPlaceObject(
-                releasedGridPosition,
-                gridObject
-            );
-
-        if (validPosition)
-        {
-            // =================================================
-            // VALID PLACEMENT
-            // =================================================
-
-            currentGridPosition =
-                releasedGridPosition;
-
-            previousValidGridPosition =
-                currentGridPosition;
-
-            SnapToGrid(
-                currentGridPosition
-            );
-
-            gridManager.PlaceObject(
-                currentGridPosition,
-                gridObject
-            );
-        }
-        else
-        {
-            // =================================================
-            // INVALID PLACEMENT
-            // =================================================
-
-            // Return to previous valid position.
-            currentGridPosition =
-                previousValidGridPosition;
-
-            SnapToGrid(
-                currentGridPosition
-            );
-
-            gridManager.PlaceObject(
-                currentGridPosition,
-                gridObject
-            );
-        }
-
-        // Return to normal color.
-        SetColor(
-            normalColor
-        );
-    }
-
-    // =========================================================
-    // DRAG OBJECT
+    // DRAG
     // =========================================================
 
     private void DragObject()
     {
-        if (Mouse.current == null)
+        if (
+            Mouse.current == null ||
+            mainCamera == null
+        )
+        {
             return;
+        }
 
-        // Get mouse position.
         Vector2 mouseScreenPosition =
             Mouse.current.position.ReadValue();
 
-        // Convert to world position.
         Vector3 mouseWorldPosition =
             mainCamera.ScreenToWorldPoint(
                 new Vector3(
                     mouseScreenPosition.x,
                     mouseScreenPosition.y,
-                    -mainCamera.transform.position.z
+                    Mathf.Abs(
+                        mainCamera.transform.position.z
+                    )
                 )
             );
 
-        // Find grid position.
-        Vector2Int gridPosition =
+        mouseWorldPosition.z =
+            dragStartPosition.z;
+
+        // =====================================================
+        // FOLLOW MOUSE
+        // =====================================================
+
+        transform.position =
+            mouseWorldPosition +
+            mouseOffset;
+    }
+
+    // =========================================================
+    // UPDATE PREVIEW
+    // =========================================================
+
+    private void UpdatePlacementPreview()
+    {
+        if (
+            gridManager == null ||
+            gridObject == null
+        )
+        {
+            return;
+        }
+
+        // =====================================================
+        // INSIDE BUY AREA
+        // =====================================================
+
+        bool insideBuyArea =
+            buyArea != null &&
+            buyArea.IsInsideBuyArea(
+                transform.position
+            );
+
+        if (insideBuyArea)
+        {
+            currentPreviewValid =
+                false;
+
+            SetColor(
+                normalColor
+            );
+
+            return;
+        }
+
+        // =====================================================
+        // GRID POSITION
+        // =====================================================
+
+        currentPreviewPosition =
             gridManager.WorldToObjectGrid(
-                mouseWorldPosition,
+                transform.position,
                 gridObject
             );
 
-        // Snap to grid.
-        SnapToGrid(
-            gridPosition
-        );
+        // =====================================================
+        // VALIDATION
+        // =====================================================
 
-        // Check whether the ENTIRE object
-        // can be placed here.
-        bool validPosition =
+        currentPreviewValid =
             gridManager.CanPlaceObject(
-                gridPosition,
+                currentPreviewPosition,
                 gridObject
             );
 
         // =====================================================
-        // VALID
+        // COLOR
         // =====================================================
 
-        if (validPosition)
+        if (currentPreviewValid)
         {
             SetColor(
                 validColor
             );
         }
-
-        // =====================================================
-        // INVALID
-        // =====================================================
-
         else
         {
             SetColor(
@@ -275,39 +469,196 @@ public class DraggableObject : MonoBehaviour
     }
 
     // =========================================================
-    // SNAP TO GRID
+    // FINISH DRAG
     // =========================================================
 
-    private void SnapToGrid(
-        Vector2Int gridPosition
-    )
+    private void FinishDrag()
     {
-        Vector2 worldPosition =
+        isDragging =
+            false;
+
+        transform.localScale =
+            originalScale;
+
+        // =====================================================
+        // BUY AREA
+        // =====================================================
+
+        if (
+            buyArea != null &&
+            buyArea.IsInsideBuyArea(
+                transform.position
+            )
+        )
+        {
+            ReturnToBuyArea();
+
+            return;
+        }
+
+        // =====================================================
+        // INVALID
+        // =====================================================
+
+        if (
+            !currentPreviewValid
+        )
+        {
+            ReturnToPreviousPosition();
+
+            return;
+        }
+
+        // =====================================================
+        // PLACE
+        // =====================================================
+
+        PlaceOnGrid();
+    }
+
+    // =========================================================
+    // PLACE ON GRID
+    // =========================================================
+
+    private void PlaceOnGrid()
+    {
+        // =====================================================
+        // BUY
+        // =====================================================
+
+        if (
+            buyableObject != null &&
+            !buyableObject.IsPurchased
+        )
+        {
+            bool bought =
+                buyableObject.TryBuy();
+
+            if (!bought)
+            {
+                ReturnToPreviousPosition();
+
+                return;
+            }
+        }
+
+        // =====================================================
+        // GRID STATE
+        // =====================================================
+
+        currentGridPosition =
+            currentPreviewPosition;
+
+        isPlacedOnGrid =
+            true;
+
+        // =====================================================
+        // SNAP
+        // =====================================================
+
+        Vector2 snappedPosition =
             gridManager.ObjectGridToWorld(
-                gridPosition,
+                currentGridPosition,
                 gridObject
             );
 
         transform.position =
             new Vector3(
-                worldPosition.x,
-                worldPosition.y,
-                transform.position.z
+                snappedPosition.x,
+                snappedPosition.y,
+                dragStartPosition.z
             );
+
+        // =====================================================
+        // REGISTER
+        // =====================================================
+
+        gridManager.PlaceObject(
+            currentGridPosition,
+            gridObject
+        );
+
+        SetColor(
+            normalColor
+        );
     }
 
     // =========================================================
-    // CHANGE COLOR
+    // RETURN TO BUY AREA
+    // =========================================================
+
+    private void ReturnToBuyArea()
+    {
+        // Refund.
+        if (
+            buyableObject != null &&
+            buyableObject.IsPurchased
+        )
+        {
+            buyableObject.Sell();
+        }
+
+        isPlacedOnGrid =
+            false;
+
+        currentGridPosition =
+            Vector2Int.zero;
+
+        transform.position =
+            buyAreaPosition;
+
+        SetColor(
+            normalColor
+        );
+    }
+
+    // =========================================================
+    // RETURN TO PREVIOUS
+    // =========================================================
+
+    private void ReturnToPreviousPosition()
+    {
+        transform.position =
+            dragStartPosition;
+
+        if (dragStartedOnGrid)
+        {
+            currentGridPosition =
+                dragStartGridPosition;
+
+            isPlacedOnGrid =
+                true;
+
+            gridManager.PlaceObject(
+                currentGridPosition,
+                gridObject
+            );
+        }
+        else
+        {
+            isPlacedOnGrid =
+                false;
+        }
+
+        SetColor(
+            normalColor
+        );
+    }
+
+    // =========================================================
+    // COLOR
     // =========================================================
 
     private void SetColor(
         Color color
     )
     {
-        if (spriteRenderer == null)
-            return;
-
-        spriteRenderer.color =
-            color;
+        if (
+            spriteRenderer != null
+        )
+        {
+            spriteRenderer.color =
+                color;
+        }
     }
 }
