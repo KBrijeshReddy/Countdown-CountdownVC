@@ -1,8 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StartGameButton : MonoBehaviour
 {
     public LevelManager levelManager;
+
+    [SerializeField] private Button startButton;
 
     public void StartGame()
     {
@@ -18,10 +21,10 @@ public class StartGameButton : MonoBehaviour
         }
 
         levelManager.StartPuzzle();
+        
 
         // Disable the Start button.
-        gameObject.SetActive(
-            false
-        );
+        startButton.interactable = false;
+        
     }
 }

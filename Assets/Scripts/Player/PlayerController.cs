@@ -28,6 +28,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.15f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("GAME PHASE")]
+    [SerializeField] private LevelManager levelManager;
+
+    [Header("CAMERA SHAKE")]
+    [SerializeField] private CameraShake cameraShake;
+
+    [SerializeField] private float blockedMovementShakeDuration = 0.05f;
+
+    [SerializeField] private float blockedMovementShakeMagnitude = 0.05f;
+
+    [SerializeField] private float blockedMovementShakeCooldown = 0.15f;
+
+    private float blockedMovementShakeTimer;
+
     private Rigidbody2D rb;
 
     private float moveInput;
@@ -40,34 +54,67 @@ public class PlayerController : MonoBehaviour
 
     private bool isGrounded;
 
+
+    // =========================================================
+    // AWAKE
+    // =========================================================
+
     private void Awake()
-{
-    rb = GetComponent<Rigidbody2D>();
+    {
+        rb =
+            GetComponent<Rigidbody2D>();
 
-    // We control gravity ourselves
-    rb.gravityScale = 0f;
+        // We control gravity ourselves.
+        rb.gravityScale =
+            0f;
 
-    // Prevent the player from tunneling through platforms
-    rb.collisionDetectionMode =
-        CollisionDetectionMode2D.Continuous;
+        // Prevent player from tunneling
+        // through platforms.
+        rb.collisionDetectionMode =
+            CollisionDetectionMode2D.Continuous;
 
-    // Prevent unwanted rotation
-    rb.constraints =
-        RigidbodyConstraints2D.FreezeRotation;
-}
+        // Prevent unwanted rotation.
+        rb.constraints =
+            RigidbodyConstraints2D.FreezeRotation;
+    }
+
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
 
     private void Update()
     {
         GetInput();
+
         CheckGround();
+
         HandleJumpInput();
+
+        HandleBlockedMovementShake();
+
+        // Countdown camera shake cooldown.
+        if (
+            blockedMovementShakeTimer > 0f
+        )
+        {
+            blockedMovementShakeTimer -=
+                Time.deltaTime;
+        }
     }
+
+
+    // =========================================================
+    // FIXED UPDATE
+    // =========================================================
 
     private void FixedUpdate()
     {
         HandleMovement();
+
         HandleGravity();
     }
+
 
     // =========================================================
     // INPUT
@@ -75,35 +122,47 @@ public class PlayerController : MonoBehaviour
 
     private void GetInput()
     {
-        moveInput = 0f;
+        moveInput =
+            0f;
 
-        // A = Left
-        if (Keyboard.current.aKey.isPressed)
+        // A = Left.
+        if (
+            Keyboard.current.aKey.isPressed
+        )
         {
-            moveInput = -1f;
+            moveInput =
+                -1f;
         }
 
-        // D = Right
-        if (Keyboard.current.dKey.isPressed)
+        // D = Right.
+        if (
+            Keyboard.current.dKey.isPressed
+        )
         {
-            moveInput = 1f;
+            moveInput =
+                1f;
         }
 
-        // Jump button pressed
-        if (Keyboard.current.wKey.wasPressedThisFrame ||
-            Keyboard.current.spaceKey.wasPressedThisFrame)
+        // Jump button pressed.
+        if (
+            Keyboard.current.wKey.wasPressedThisFrame ||
+            Keyboard.current.spaceKey.wasPressedThisFrame
+        )
         {
-            jumpPressed = true;
+            jumpPressed =
+                true;
 
-            // Remember jump input briefly
-            jumpBufferCounter = jumpBufferTime;
+            // Remember jump input briefly.
+            jumpBufferCounter =
+                jumpBufferTime;
         }
 
-        // Jump button held
+        // Jump button held.
         jumpHeld =
             Keyboard.current.wKey.isPressed ||
             Keyboard.current.spaceKey.isPressed;
     }
+
 
     // =========================================================
     // MOVEMENT
@@ -111,48 +170,90 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
-        float targetSpeed = moveInput * moveSpeed;
+        // =====================================================
+        // BUY PHASE
+        // =====================================================
 
-        float currentSpeed = rb.linearVelocity.x;
-
-        // Player is pressing A or D
-        if (moveInput != 0)
+        if (
+            levelManager != null &&
+            levelManager.IsBuyingPhase()
+        )
         {
-            // If changing direction, respond quickly
-            if (Mathf.Sign(targetSpeed) != Mathf.Sign(currentSpeed) &&
-                Mathf.Abs(currentSpeed) > 0.1f)
-            {
-                currentSpeed = Mathf.MoveTowards(
-                    currentSpeed,
-                    targetSpeed,
-                    acceleration * 1.5f * Time.fixedDeltaTime
+            // Prevent horizontal movement.
+            rb.linearVelocity =
+                new Vector2(
+                    0f,
+                    rb.linearVelocity.y
                 );
+
+            return;
+        }
+
+
+        // =====================================================
+        // NORMAL MOVEMENT
+        // =====================================================
+
+        float targetSpeed =
+            moveInput *
+            moveSpeed;
+
+        float currentSpeed =
+            rb.linearVelocity.x;
+
+        // Player is pressing A or D.
+        if (
+            moveInput != 0
+        )
+        {
+            // If changing direction,
+            // respond quickly.
+            if (
+                Mathf.Sign(targetSpeed) !=
+                Mathf.Sign(currentSpeed) &&
+                Mathf.Abs(currentSpeed) > 0.1f
+            )
+            {
+                currentSpeed =
+                    Mathf.MoveTowards(
+                        currentSpeed,
+                        targetSpeed,
+                        acceleration *
+                        1.5f *
+                        Time.fixedDeltaTime
+                    );
             }
             else
             {
-                // Normal acceleration
-                currentSpeed = Mathf.MoveTowards(
-                    currentSpeed,
-                    targetSpeed,
-                    acceleration * Time.fixedDeltaTime
-                );
+                // Normal acceleration.
+                currentSpeed =
+                    Mathf.MoveTowards(
+                        currentSpeed,
+                        targetSpeed,
+                        acceleration *
+                        Time.fixedDeltaTime
+                    );
             }
         }
         else
         {
-            // No input = quickly stop
-            currentSpeed = Mathf.MoveTowards(
-                currentSpeed,
-                0f,
-                deceleration * Time.fixedDeltaTime
-            );
+            // No input = quickly stop.
+            currentSpeed =
+                Mathf.MoveTowards(
+                    currentSpeed,
+                    0f,
+                    deceleration *
+                    Time.fixedDeltaTime
+                );
         }
 
-        rb.linearVelocity = new Vector2(
-            currentSpeed,
-            rb.linearVelocity.y
-        );
+        rb.linearVelocity =
+            new Vector2(
+                currentSpeed,
+                rb.linearVelocity.y
+            );
     }
+
 
     // =========================================================
     // JUMP
@@ -160,47 +261,93 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJumpInput()
     {
-        // Countdown jump buffer
-        if (jumpBufferCounter > 0)
+        // =====================================================
+        // BUY PHASE
+        // =====================================================
+
+        if (
+            levelManager != null &&
+            levelManager.IsBuyingPhase()
+        )
         {
-            jumpBufferCounter -= Time.deltaTime;
+            jumpBufferCounter =
+                0f;
+
+            jumpPressed =
+                false;
+
+            return;
         }
 
-        // Countdown coyote time
-        if (!isGrounded)
+
+        // =====================================================
+        // NORMAL JUMP
+        // =====================================================
+
+        // Countdown jump buffer.
+        if (
+            jumpBufferCounter > 0
+        )
         {
-            coyoteCounter -= Time.deltaTime;
+            jumpBufferCounter -=
+                Time.deltaTime;
+        }
+
+        // Countdown coyote time.
+        if (
+            !isGrounded
+        )
+        {
+            coyoteCounter -=
+                Time.deltaTime;
         }
 
         // Jump if we pressed jump recently
-        // and are allowed to jump
-        if (jumpBufferCounter > 0 &&
-            coyoteCounter > 0)
+        // and are allowed to jump.
+        if (
+            jumpBufferCounter > 0 &&
+            coyoteCounter > 0
+        )
         {
             PerformJump();
 
-            jumpBufferCounter = 0f;
-            coyoteCounter = 0f;
-            jumpPressed = false;
+            jumpBufferCounter =
+                0f;
+
+            coyoteCounter =
+                0f;
+
+            jumpPressed =
+                false;
         }
 
-        // Release jump early
-        if (!jumpHeld &&
-            rb.linearVelocity.y > 0)
+        // Release jump early.
+        if (
+            !jumpHeld &&
+            rb.linearVelocity.y > 0
+        )
         {
-            rb.linearVelocity = new Vector2(
-                rb.linearVelocity.x,
-                rb.linearVelocity.y * jumpCutMultiplier
-            );
+            rb.linearVelocity =
+                new Vector2(
+                    rb.linearVelocity.x,
+                    rb.linearVelocity.y *
+                    jumpCutMultiplier
+                );
         }
 
-        jumpPressed = false;
+        jumpPressed =
+            false;
     }
+
+
+    // =========================================================
+    // PERFORM JUMP
+    // =========================================================
 
     private void PerformJump()
     {
-        // Calculate the exact velocity needed
-        // to reach the desired jump height.
+        // Calculate exact velocity needed
+        // to reach desired jump height.
         float jumpVelocity =
             Mathf.Sqrt(
                 2f *
@@ -208,43 +355,54 @@ public class PlayerController : MonoBehaviour
                 jumpHeight
             );
 
-        rb.linearVelocity = new Vector2(
-            rb.linearVelocity.x,
-            jumpVelocity
-        );
+        rb.linearVelocity =
+            new Vector2(
+                rb.linearVelocity.x,
+                jumpVelocity
+            );
     }
+
 
     // =========================================================
     // GRAVITY
     // =========================================================
 
     private void HandleGravity()
-{
-    // If we are standing on the ground,
-    // completely stop downward velocity.
-    if (isGrounded && rb.linearVelocity.y <= 0)
     {
-        rb.linearVelocity = new Vector2(
-            rb.linearVelocity.x,
-            0f
-        );
+        // If standing on ground,
+        // completely stop downward velocity.
+        if (
+            isGrounded &&
+            rb.linearVelocity.y <= 0
+        )
+        {
+            rb.linearVelocity =
+                new Vector2(
+                    rb.linearVelocity.x,
+                    0f
+                );
 
-        return;
+            return;
+        }
+
+        float gravity =
+            jumpGravity;
+
+        // Falling = stronger gravity.
+        if (
+            rb.linearVelocity.y < 0
+        )
+        {
+            gravity *=
+                fallGravityMultiplier;
+        }
+
+        rb.linearVelocity +=
+            Vector2.down *
+            gravity *
+            Time.fixedDeltaTime;
     }
 
-    float gravity = jumpGravity;
-
-    // Falling = stronger gravity
-    if (rb.linearVelocity.y < 0)
-    {
-        gravity *= fallGravityMultiplier;
-    }
-
-    rb.linearVelocity +=
-        Vector2.down *
-        gravity *
-        Time.fixedDeltaTime;
-}
 
     // =========================================================
     // GROUND CHECK
@@ -252,26 +410,107 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        bool previousGrounded = isGrounded;
+        bool previousGrounded =
+            isGrounded;
 
-        isGrounded = Physics2D.OverlapCircle(
-            groundCheck.position,
-            groundCheckRadius,
-            groundLayer
-        );
+        isGrounded =
+            Physics2D.OverlapCircle(
+                groundCheck.position,
+                groundCheckRadius,
+                groundLayer
+            );
 
-        // Just landed or currently grounded
-        if (isGrounded)
+        // Just landed or currently grounded.
+        if (
+            isGrounded
+        )
         {
-            coyoteCounter = coyoteTime;
+            coyoteCounter =
+                coyoteTime;
         }
 
-        // Just walked off a platform
-        if (previousGrounded && !isGrounded)
+        // Just walked off a platform.
+        if (
+            previousGrounded &&
+            !isGrounded
+        )
         {
-            coyoteCounter = coyoteTime;
+            coyoteCounter =
+                coyoteTime;
         }
     }
+
+
+    // =========================================================
+    // BUY PHASE CAMERA SHAKE
+    // =========================================================
+
+private void HandleBlockedMovementShake()
+{
+    // =====================================================
+    // CHECK LEVEL MANAGER
+    // =====================================================
+
+    if (levelManager == null)
+    {
+        return;
+    }
+
+
+    // =====================================================
+    // ONLY SHAKE DURING BUY PHASE
+    // =====================================================
+
+    if (!levelManager.IsBuyingPhase())
+    {
+        return;
+    }
+
+
+    // =====================================================
+    // CHECK MOVEMENT INPUT
+    // =====================================================
+
+    bool tryingToMove =
+        Keyboard.current.aKey.isPressed ||
+        Keyboard.current.dKey.isPressed || Keyboard.current.wKey.isPressed || Keyboard.current.spaceKey.isPressed;
+
+    if (!tryingToMove)
+    {
+        return;
+    }
+
+
+    // =====================================================
+    // COOLDOWN
+    // =====================================================
+
+    if (blockedMovementShakeTimer > 0f)
+    {
+        return;
+    }
+
+
+    // =====================================================
+    // SHAKE CAMERA
+    // =====================================================
+
+    if (CameraShake.Instance != null)
+    {
+        CameraShake.Instance.Shake(
+            blockedMovementShakeDuration,
+            blockedMovementShakeMagnitude
+        );
+    }
+
+
+    // =====================================================
+    // START COOLDOWN
+    // =====================================================
+
+    blockedMovementShakeTimer =
+        blockedMovementShakeCooldown;
+}
 
     // =========================================================
     // DEBUG
@@ -279,10 +518,15 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (groundCheck == null)
+        if (
+            groundCheck == null
+        )
+        {
             return;
+        }
 
-        Gizmos.color = Color.green;
+        Gizmos.color =
+            Color.green;
 
         Gizmos.DrawWireSphere(
             groundCheck.position,

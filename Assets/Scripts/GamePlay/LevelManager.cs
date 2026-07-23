@@ -1,25 +1,86 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
+using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
+    // =========================================================
+    // GAME PHASE
+    // =========================================================
+
     public enum GamePhase
     {
         Buying,
-        Puzzle,
-        LevelComplete
+        Puzzle
     }
 
-    [Header("Level Settings")]
-    [SerializeField] private float startingTime = 200f;
-
-    [Header("Current State")]
-    [SerializeField] private GamePhase currentPhase =
+    [Header("Game Phase")]
+    public GamePhase currentPhase =
         GamePhase.Buying;
+
+
+    // =========================================================
+    // TIMER
+    // =========================================================
+
+    [Header("Timer")]
+
+    public float startingTime = 200f;
 
     private float remainingTime;
 
-    private bool timeOutHandled;
+    private Coroutine timerCoroutine;
+
+
+    // =========================================================
+    // TIMER UI
+    // =========================================================
+
+    [Header("Timer UI")]
+
+    public TMP_Text timerText;
+
+
+    // =========================================================
+    // START BUTTON
+    // =========================================================
+
+    [Header("Start Button")]
+
+    public Button startButton;
+
+
+    // =========================================================
+    // PLAYER
+    // =========================================================
+
+    [Header("Player")]
+
+    public GameObject player;
+
+    [Header("Player Movement Script")]
+
+    public MonoBehaviour playerMovementScript;
+
+    [Header("Player Collider")]
+
+    public Collider2D playerCollider;
+
+
+    // =========================================================
+    // GRID
+    // =========================================================
+
+    [Header("Grid")]
+
+    public GridManager gridManager;
+
+
+    // =========================================================
+    // REMAINING TIME
+    // =========================================================
 
     public float RemainingTime
     {
@@ -29,60 +90,90 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public GamePhase CurrentPhase
-    {
-        get
-        {
-            return currentPhase;
-        }
-    }
+
+    // =========================================================
+    // AWAKE
+    // =========================================================
 
     private void Awake()
     {
-        remainingTime =
-            startingTime;
+        Debug.Log(
+            "LEVEL MANAGER AWAKE"
+        );
+    }
 
+
+    // =========================================================
+    // START
+    // =========================================================
+
+    private void Start()
+    {
+        // Start in Buying Phase.
         currentPhase =
             GamePhase.Buying;
 
-        timeOutHandled =
-            false;
+        // Set starting time.
+        remainingTime =
+            startingTime;
 
-        Time.timeScale =
-            1f;
-    }
+        // Update timer display.
+        UpdateTimerUI();
 
-    private void Update()
-    {
-        // Timer does NOT run during buying.
+
+        // =====================================================
+        // PLAYER
+        // =====================================================
+
+        // IMPORTANT:
+        // Keep PlayerController ENABLED.
+        //
+        // PlayerController needs to remain active so it can
+        // detect the player attempting to move during the
+        // Buy Phase and trigger the camera shake.
+        //
+        // PlayerController itself will prevent actual
+        // movement while IsBuyingPhase() is true.
+
+        SetPlayerMovement(
+            true
+        );
+
+
+        // Disable player collider.
+        SetPlayerCollider(
+            false
+        );
+
+
+        // =====================================================
+        // GRID
+        // =====================================================
+
+        // Show grid during Buy Phase.
+        SetGridVisual(
+            true
+        );
+
+
+        // =====================================================
+        // START BUTTON
+        // =====================================================
+
         if (
-            currentPhase !=
-            GamePhase.Puzzle
+            startButton != null
         )
         {
-            return;
+            startButton.interactable =
+                true;
         }
 
-        // Prevent timer from running
-        // after time has already reached zero.
-        if (timeOutHandled)
-        {
-            return;
-        }
 
-        remainingTime -=
-            Time.deltaTime;
-
-        if (
-            remainingTime <= 0f
-        )
-        {
-            remainingTime =
-                0f;
-
-            TimeRanOut();
-        }
+        Debug.Log(
+            "LEVEL MANAGER STARTED"
+        );
     }
+
 
     // =========================================================
     // START PUZZLE
@@ -90,22 +181,183 @@ public class LevelManager : MonoBehaviour
 
     public void StartPuzzle()
     {
-        // Can only start once.
+        // Prevent starting twice.
         if (
-            currentPhase !=
-            GamePhase.Buying
+            currentPhase ==
+            GamePhase.Puzzle
         )
         {
             return;
         }
 
+
+        Debug.Log(
+            "START PUZZLE FUNCTION CALLED"
+        );
+
+
+        // =====================================================
+        // CHANGE PHASE
+        // =====================================================
+
         currentPhase =
             GamePhase.Puzzle;
 
+
         Debug.Log(
-            "PUZZLE STARTED"
+            "CURRENT PHASE IS NOW: " +
+            currentPhase
+        );
+
+
+        // =====================================================
+        // PLAYER MOVEMENT
+        // =====================================================
+
+        // Keep PlayerController ENABLED.
+        //
+        // It will now automatically allow movement because
+        // IsBuyingPhase() returns false.
+
+        SetPlayerMovement(
+            true
+        );
+
+
+        // =====================================================
+        // PLAYER COLLIDER
+        // =====================================================
+
+        // Enable player collider.
+        SetPlayerCollider(
+            true
+        );
+
+
+        // =====================================================
+        // GRID VISUAL
+        // =====================================================
+
+        // Hide grid when puzzle begins.
+        SetGridVisual(
+            false
+        );
+
+
+        // =====================================================
+        // START BUTTON
+        // =====================================================
+
+        if (
+            startButton != null
+        )
+        {
+            startButton.interactable =
+                false;
+        }
+
+
+        // =====================================================
+        // START TIMER
+        // =====================================================
+
+        if (
+            timerCoroutine != null
+        )
+        {
+            StopCoroutine(
+                timerCoroutine
+            );
+        }
+
+        timerCoroutine =
+            StartCoroutine(
+                RunTimer()
+            );
+
+
+        Debug.Log(
+            "TIMER COROUTINE STARTED"
         );
     }
+
+
+    // =========================================================
+    // TIMER
+    // =========================================================
+
+    private IEnumerator RunTimer()
+    {
+        while (
+            remainingTime > 0f
+        )
+        {
+            // Wait one real-time frame.
+            yield return null;
+
+
+            // Subtract real frame time.
+            remainingTime -=
+                Time.unscaledDeltaTime;
+
+
+            // Prevent negative values.
+            if (
+                remainingTime < 0f
+            )
+            {
+                remainingTime =
+                    0f;
+            }
+
+
+            // Update timer UI.
+            UpdateTimerUI();
+        }
+
+
+        // =====================================================
+        // TIME RAN OUT
+        // =====================================================
+
+        Debug.Log(
+            "TIME RAN OUT"
+        );
+
+
+        remainingTime =
+            0f;
+
+
+        UpdateTimerUI();
+
+
+        // Restart level.
+        RestartLevel();
+    }
+
+
+    // =========================================================
+    // BUYING PHASE CHECK
+    // =========================================================
+
+    public bool IsBuyingPhase()
+    {
+        return currentPhase ==
+            GamePhase.Buying;
+    }
+
+
+    // =========================================================
+    // PUZZLE PHASE CHECK
+    // =========================================================
+
+    public bool IsPuzzlePhase()
+    {
+        return currentPhase ==
+            GamePhase.Puzzle;
+    }
+
 
     // =========================================================
     // SPEND TIME
@@ -115,15 +367,14 @@ public class LevelManager : MonoBehaviour
         float amount
     )
     {
-        // Never spend negative time.
         if (
-            amount <= 0f
+            amount < 0f
         )
         {
-            return true;
+            return false;
         }
 
-        // Cannot spend more than available.
+
         if (
             remainingTime < amount
         )
@@ -131,11 +382,17 @@ public class LevelManager : MonoBehaviour
             return false;
         }
 
+
         remainingTime -=
             amount;
 
+
+        UpdateTimerUI();
+
+
         return true;
     }
+
 
     // =========================================================
     // ADD TIME
@@ -146,77 +403,126 @@ public class LevelManager : MonoBehaviour
     )
     {
         if (
-            amount <= 0f
+            amount < 0f
         )
         {
             return;
         }
+
 
         remainingTime +=
             amount;
+
+
+        UpdateTimerUI();
     }
 
-    // =========================================================
-    // TIME RAN OUT
-    // =========================================================
-
-    private void TimeRanOut()
-    {
-        if (timeOutHandled)
-        {
-            return;
-        }
-
-        timeOutHandled =
-            true;
-
-        Debug.Log(
-            "TIME RAN OUT"
-        );
-
-        SceneManager.LoadScene(
-            SceneManager.GetActiveScene()
-                .buildIndex
-        );
-    }
 
     // =========================================================
-    // COMPLETE LEVEL
+    // PLAYER MOVEMENT
     // =========================================================
 
-    public void CompleteLevel()
+    public void SetPlayerMovement(
+        bool active
+    )
     {
         if (
-            currentPhase !=
-            GamePhase.Puzzle
+            playerMovementScript != null
+        )
+        {
+            // IMPORTANT:
+            // The PlayerController should remain enabled.
+            //
+            // The PlayerController itself decides whether
+            // movement is allowed based on the current phase.
+            //
+            // Therefore, we intentionally do NOT disable
+            // playerMovementScript here.
+
+            if (
+                !playerMovementScript.enabled
+            )
+            {
+                playerMovementScript.enabled =
+                    true;
+            }
+        }
+    }
+
+
+    // =========================================================
+    // PLAYER COLLIDER
+    // =========================================================
+
+    private void SetPlayerCollider(
+        bool active
+    )
+    {
+        if (
+            playerCollider != null
+        )
+        {
+            playerCollider.enabled =
+                active;
+        }
+    }
+
+
+    // =========================================================
+    // GRID VISUAL
+    // =========================================================
+
+    private void SetGridVisual(
+        bool visible
+    )
+    {
+        if (
+            gridManager != null
+        )
+        {
+            gridManager.showGridVisual =
+                visible;
+        }
+    }
+
+
+    // =========================================================
+    // UPDATE TIMER UI
+    // =========================================================
+
+    private void UpdateTimerUI()
+    {
+        if (
+            timerText == null
         )
         {
             return;
         }
 
-        currentPhase =
-            GamePhase.LevelComplete;
+
+        int seconds =
+            Mathf.CeilToInt(
+                remainingTime
+            );
+
+
+        timerText.text =
+            seconds.ToString();
     }
+
 
     // =========================================================
-    // PHASE CHECKS
+    // RESTART LEVEL
     // =========================================================
 
-    public bool IsBuyingPhase()
+    private void RestartLevel()
     {
-        return currentPhase ==
-               GamePhase.Buying;
-    }
+        Scene currentScene =
+            SceneManager.GetActiveScene();
 
-    public bool IsPuzzlePhase()
-    {
-        return currentPhase ==
-               GamePhase.Puzzle;
-    }
 
-    public bool IsLevelComplete()
-    {
-        return currentPhase ==
-               GamePhase.LevelComplete;
+        SceneManager.LoadScene(
+            currentScene.buildIndex
+        );
     }
 }
