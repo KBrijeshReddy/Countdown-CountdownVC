@@ -2,20 +2,15 @@ using UnityEngine;
 
 public class GridVisual : MonoBehaviour
 {
-    [Header("Grid Settings")]
-    public int gridWidth = 10;
-    public int gridHeight = 8;
-    public float cellSize = 1f;
-
-    [Header("Grid Position")]
-    public Vector2 gridOrigin;
+    [Header("Grid Reference")]
+    public GridManager gridManager;
 
     [Header("Visual Settings")]
     public Color gridColor = new Color(
         1f,
         1f,
         1f,
-        0.15f
+        0.1f
     );
 
     public float lineWidth = 0.02f;
@@ -25,14 +20,45 @@ public class GridVisual : MonoBehaviour
 
     private void Start()
     {
+        if (gridManager == null)
+        {
+            Debug.LogError(
+                "GridVisual: GridManager is not assigned!"
+            );
+
+            return;
+        }
+
         GenerateGrid();
     }
 
+    // =========================================================
+    // GENERATE GRID
+    // =========================================================
+
     public void GenerateGrid()
     {
-        // =============================================
+        // Make sure we don't accidentally
+        // generate the grid multiple times.
+        ClearGrid();
+
+        // Get all grid information
+        // directly from GridManager.
+        int gridWidth =
+            gridManager.gridWidth;
+
+        int gridHeight =
+            gridManager.gridHeight;
+
+        float cellSize =
+            gridManager.cellSize;
+
+        Vector2 gridOrigin =
+            gridManager.gridOrigin;
+
+        // =====================================================
         // VERTICAL LINES
-        // =============================================
+        // =====================================================
 
         for (int x = 0; x <= gridWidth; x++)
         {
@@ -84,9 +110,9 @@ public class GridVisual : MonoBehaviour
             );
         }
 
-        // =============================================
+        // =====================================================
         // HORIZONTAL LINES
-        // =============================================
+        // =====================================================
 
         for (int y = 0; y <= gridHeight; y++)
         {
@@ -139,6 +165,10 @@ public class GridVisual : MonoBehaviour
         }
     }
 
+    // =========================================================
+    // SETUP LINE
+    // =========================================================
+
     private void SetupLineRenderer(
         LineRenderer line
     )
@@ -161,16 +191,54 @@ public class GridVisual : MonoBehaviour
         line.numCapVertices =
             1;
 
-        // Use assigned material.
+        line.sortingOrder =
+            10;
+
         if (lineMaterial != null)
         {
             line.material =
                 lineMaterial;
         }
+    }
 
-        // Make sure lines render above
-        // the background.
-        line.sortingOrder =
-            10;
+    // =========================================================
+    // CLEAR GRID
+    // =========================================================
+
+    public void ClearGrid()
+    {
+        // Delete all previously generated lines.
+        for (
+            int i = transform.childCount - 1;
+            i >= 0;
+            i--
+        )
+        {
+            Destroy(
+                transform.GetChild(i).gameObject
+            );
+        }
+    }
+
+    // =========================================================
+    // SHOW GRID
+    // =========================================================
+
+    public void ShowGrid()
+    {
+        gameObject.SetActive(
+            true
+        );
+    }
+
+    // =========================================================
+    // HIDE GRID
+    // =========================================================
+
+    public void HideGrid()
+    {
+        gameObject.SetActive(
+            false
+        );
     }
 }

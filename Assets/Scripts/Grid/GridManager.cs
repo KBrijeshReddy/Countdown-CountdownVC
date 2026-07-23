@@ -238,6 +238,22 @@ public class GridManager : MonoBehaviour
             }
         }
 
+        PlacementRule placementRule =
+    gridObject.GetComponent<PlacementRule>();
+
+if (placementRule != null)
+{
+    if (
+        !placementRule.IsPlacementValid(
+            bottomLeftCell,
+            this
+        )
+    )
+    {
+        return false;
+    }
+}
+
         return true;
     }
 
@@ -397,5 +413,53 @@ public class GridManager : MonoBehaviour
             end
         );
     }
+}
+
+public bool HasAnythingAt(
+    Vector2Int gridPosition
+)
+{
+    // =========================================================
+    // CHECK PLACEABLE OBJECTS
+    // =========================================================
+
+    // Only check the occupiedCells array
+    // if the position is inside our grid.
+    if (
+        gridPosition.x >= 0 &&
+        gridPosition.x < gridWidth &&
+        gridPosition.y >= 0 &&
+        gridPosition.y < gridHeight
+    )
+    {
+        if (
+            occupiedCells[
+                gridPosition.x,
+                gridPosition.y
+            ] != null
+        )
+        {
+            return true;
+        }
+    }
+
+    // =========================================================
+    // CHECK TILEMAP
+    // =========================================================
+
+    // Tilemaps can exist outside the
+    // placeable grid, so we ALWAYS check
+    // the Tilemap.
+    if (
+        IsTilemapCellBlocked(
+            gridPosition.x,
+            gridPosition.y
+        )
+    )
+    {
+        return true;
+    }
+
+    return false;
 }
 }
