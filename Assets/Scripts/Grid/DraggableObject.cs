@@ -15,6 +15,9 @@ public class DraggableObject : MonoBehaviour
     [Header("Visuals")]
     public float pickupScale = 1.08f;
 
+    [Header("Object Timer")]
+    public PlaceableObjectTimer placeableObjectTimer;
+
     public Color normalColor = Color.white;
 
     public Color validColor =
@@ -389,9 +392,50 @@ public class DraggableObject : MonoBehaviour
         // FOLLOW MOUSE
         // =====================================================
 
-        transform.position =
+        Vector3 targetPosition =
             mouseWorldPosition +
             mouseOffset;
+
+        // =====================================================
+        // GRID SNAP WHILE DRAGGING
+        // =====================================================
+
+        if (
+            gridManager != null &&
+            gridObject != null
+        )
+        {
+            // Find the grid cell closest to
+            // the current mouse position.
+            Vector2Int snappedGridPosition =
+                gridManager.WorldToObjectGrid(
+                    targetPosition,
+                    gridObject
+                );
+
+            // Convert that grid position back
+            // into a world position.
+            Vector2 snappedWorldPosition =
+                gridManager.ObjectGridToWorld(
+                    snappedGridPosition,
+                    gridObject
+                );
+
+            // Keep the original Z position.
+            transform.position =
+                new Vector3(
+                    snappedWorldPosition.x,
+                    snappedWorldPosition.y,
+                    dragStartPosition.z
+                );
+        }
+        else
+        {
+            // Fallback to normal mouse dragging
+            // if GridManager or GridObject is missing.
+            transform.position =
+                targetPosition;
+        }
     }
 
     // =========================================================
@@ -578,6 +622,10 @@ public class DraggableObject : MonoBehaviour
             gridObject
         );
 
+        // =====================================================
+        // RESET COLOR
+        // =====================================================
+
         SetColor(
             normalColor
         );
@@ -660,5 +708,14 @@ public class DraggableObject : MonoBehaviour
             spriteRenderer.color =
                 color;
         }
+    }
+
+    // =========================================================
+    // PUBLIC GRID STATE
+    // =========================================================
+
+    public bool IsPlacedOnGrid()
+    {
+        return isPlacedOnGrid;
     }
 }

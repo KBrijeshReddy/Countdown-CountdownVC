@@ -5,8 +5,6 @@ public class StartGameButton : MonoBehaviour
 {
     public LevelManager levelManager;
 
-    [SerializeField] private Button startButton;
-
     public void StartGame()
     {
         if (
@@ -24,7 +22,7 @@ public class StartGameButton : MonoBehaviour
         
 
         // Disable the Start button.
-        startButton.interactable = false;
+        gameObject.SetActive(false);
         
     }
 }
