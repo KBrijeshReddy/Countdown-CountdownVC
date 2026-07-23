@@ -4,10 +4,14 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 5f;
+    public float maxSpeed = 7f;
+    public float acceleration = 40f;
+    public float deceleration = 50f;
 
     [Header("Jump")]
-    public float jumpForce = 10f;
+    public float jumpForce = 12f;
+    public float fallGravityMultiplier = 2f;
+    public float jumpCutMultiplier = 0.5f;
 
     [Header("Ground Check")]
     public Transform groundCheck;
@@ -15,8 +19,10 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayer;
 
     private Rigidbody2D rb;
+
     private float moveInput;
     private bool jumpPressed;
+    private bool jumpHeld;
 
     private void Awake()
     {
@@ -25,26 +31,99 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // A and D movement
-        moveInput = Keyboard.current.aKey.isPressed ? -1f :
-                    Keyboard.current.dKey.isPressed ? 1f : 0f;
+        // =========================
+        // MOVEMENT INPUT
+        // =========================
 
-        // W to jump
-        if (Keyboard.current.wKey.wasPressedThisFrame)
+        if (Keyboard.current.aKey.isPressed)
+        {
+            moveInput = -1f;
+        }
+        else if (Keyboard.current.dKey.isPressed)
+        {
+            moveInput = 1f;
+        }
+        else
+        {
+            moveInput = 0f;
+        }
+
+
+        // =========================
+        // JUMP INPUT
+        // =========================
+
+        if (Keyboard.current.wKey.wasPressedThisFrame ||
+            Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             jumpPressed = true;
+        }
+
+        jumpHeld =
+            Keyboard.current.wKey.isPressed ||
+            Keyboard.current.spaceKey.isPressed;
+
+
+        // =========================
+        // VARIABLE JUMP
+        // =========================
+
+        // Release jump early = shorter jump
+        if (!jumpHeld && rb.linearVelocity.y > 0)
+        {
+            rb.linearVelocity = new Vector2(
+                rb.linearVelocity.x,
+                rb.linearVelocity.y * jumpCutMultiplier
+            );
         }
     }
 
     private void FixedUpdate()
     {
-        // Horizontal movement
-        rb.linearVelocity = new Vector2(
-            moveInput * moveSpeed,
-            rb.linearVelocity.y
+        HandleMovement();
+        HandleJump();
+        HandleGravity();
+    }
+
+
+    // =========================
+    // MOVEMENT
+    // =========================
+
+    private void HandleMovement()
+    {
+        float targetSpeed = moveInput * maxSpeed;
+
+        float speedChange;
+
+        if (moveInput != 0)
+        {
+            speedChange = acceleration;
+        }
+        else
+        {
+            speedChange = deceleration;
+        }
+
+        float newSpeed = Mathf.MoveTowards(
+            rb.linearVelocity.x,
+            targetSpeed,
+            speedChange * Time.fixedDeltaTime
         );
 
-        // Jump
+        rb.linearVelocity = new Vector2(
+            newSpeed,
+            rb.linearVelocity.y
+        );
+    }
+
+
+    // =========================
+    // JUMP
+    // =========================
+
+    private void HandleJump()
+    {
         if (jumpPressed && IsGrounded())
         {
             rb.linearVelocity = new Vector2(
@@ -55,6 +134,34 @@ public class PlayerController : MonoBehaviour
 
         jumpPressed = false;
     }
+
+
+    // =========================
+    // GRAVITY
+    // =========================
+
+    private void HandleGravity()
+    {
+        // When falling, smoothly increase gravity
+        // instead of instantly changing velocity.
+
+        if (rb.linearVelocity.y < 0)
+        {
+            float extraGravity =
+                Physics2D.gravity.y *
+                (fallGravityMultiplier - 1);
+
+            rb.AddForce(
+                Vector2.up * extraGravity,
+                ForceMode2D.Force
+            );
+        }
+    }
+
+
+    // =========================
+    // GROUND CHECK
+    // =========================
 
     private bool IsGrounded()
     {
