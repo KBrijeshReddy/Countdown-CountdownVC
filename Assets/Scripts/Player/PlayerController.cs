@@ -3,172 +3,270 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
-    public float maxSpeed = 7f;
-    public float acceleration = 40f;
-    public float deceleration = 50f;
+    [Header("MOVEMENT")]
+    [SerializeField] private float moveSpeed = 7f;
+    [SerializeField] private float acceleration = 80f;
+    [SerializeField] private float deceleration = 100f;
 
-    [Header("Jump")]
-    public float jumpForce = 12f;
-    public float fallGravityMultiplier = 2f;
-    public float jumpCutMultiplier = 0.5f;
+    [Header("JUMP")]
+    [SerializeField] private float jumpHeight = 5f;
+    [SerializeField] private float jumpGravity = 35f;
 
-    [Header("Ground Check")]
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
-    public LayerMask groundLayer;
+    [Tooltip("How much the jump is reduced when releasing jump early.")]
+    [Range(0.1f, 1f)]
+    [SerializeField] private float jumpCutMultiplier = 0.45f;
+
+    [Tooltip("How much stronger gravity becomes while falling.")]
+    [SerializeField] private float fallGravityMultiplier = 1.5f;
+
+    [Header("JUMP ASSIST")]
+    [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] private float jumpBufferTime = 0.1f;
+
+    [Header("GROUND CHECK")]
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.15f;
+    [SerializeField] private LayerMask groundLayer;
 
     private Rigidbody2D rb;
 
     private float moveInput;
+
     private bool jumpPressed;
     private bool jumpHeld;
+
+    private float coyoteCounter;
+    private float jumpBufferCounter;
+
+    private bool isGrounded;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        // We control gravity ourselves.
+        rb.gravityScale = 0f;
     }
 
     private void Update()
     {
-        // =========================
-        // MOVEMENT INPUT
-        // =========================
+        GetInput();
+        CheckGround();
+        HandleJumpInput();
+    }
 
+    private void FixedUpdate()
+    {
+        HandleMovement();
+        HandleGravity();
+    }
+
+    // =========================================================
+    // INPUT
+    // =========================================================
+
+    private void GetInput()
+    {
+        moveInput = 0f;
+
+        // A = Left
         if (Keyboard.current.aKey.isPressed)
         {
             moveInput = -1f;
         }
-        else if (Keyboard.current.dKey.isPressed)
+
+        // D = Right
+        if (Keyboard.current.dKey.isPressed)
         {
             moveInput = 1f;
         }
-        else
-        {
-            moveInput = 0f;
-        }
 
-
-        // =========================
-        // JUMP INPUT
-        // =========================
-
+        // Jump button pressed
         if (Keyboard.current.wKey.wasPressedThisFrame ||
             Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             jumpPressed = true;
+
+            // Remember jump input briefly
+            jumpBufferCounter = jumpBufferTime;
         }
 
+        // Jump button held
         jumpHeld =
             Keyboard.current.wKey.isPressed ||
             Keyboard.current.spaceKey.isPressed;
+    }
 
+    // =========================================================
+    // MOVEMENT
+    // =========================================================
 
-        // =========================
-        // VARIABLE JUMP
-        // =========================
+    private void HandleMovement()
+    {
+        float targetSpeed = moveInput * moveSpeed;
 
-        // Release jump early = shorter jump
-        if (!jumpHeld && rb.linearVelocity.y > 0)
+        float currentSpeed = rb.linearVelocity.x;
+
+        // Player is pressing A or D
+        if (moveInput != 0)
+        {
+            // If changing direction, respond quickly
+            if (Mathf.Sign(targetSpeed) != Mathf.Sign(currentSpeed) &&
+                Mathf.Abs(currentSpeed) > 0.1f)
+            {
+                currentSpeed = Mathf.MoveTowards(
+                    currentSpeed,
+                    targetSpeed,
+                    acceleration * 1.5f * Time.fixedDeltaTime
+                );
+            }
+            else
+            {
+                // Normal acceleration
+                currentSpeed = Mathf.MoveTowards(
+                    currentSpeed,
+                    targetSpeed,
+                    acceleration * Time.fixedDeltaTime
+                );
+            }
+        }
+        else
+        {
+            // No input = quickly stop
+            currentSpeed = Mathf.MoveTowards(
+                currentSpeed,
+                0f,
+                deceleration * Time.fixedDeltaTime
+            );
+        }
+
+        rb.linearVelocity = new Vector2(
+            currentSpeed,
+            rb.linearVelocity.y
+        );
+    }
+
+    // =========================================================
+    // JUMP
+    // =========================================================
+
+    private void HandleJumpInput()
+    {
+        // Countdown jump buffer
+        if (jumpBufferCounter > 0)
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
+
+        // Countdown coyote time
+        if (!isGrounded)
+        {
+            coyoteCounter -= Time.deltaTime;
+        }
+
+        // Jump if we pressed jump recently
+        // and are allowed to jump
+        if (jumpBufferCounter > 0 &&
+            coyoteCounter > 0)
+        {
+            PerformJump();
+
+            jumpBufferCounter = 0f;
+            coyoteCounter = 0f;
+            jumpPressed = false;
+        }
+
+        // Release jump early
+        if (!jumpHeld &&
+            rb.linearVelocity.y > 0)
         {
             rb.linearVelocity = new Vector2(
                 rb.linearVelocity.x,
                 rb.linearVelocity.y * jumpCutMultiplier
             );
         }
-    }
-
-    private void FixedUpdate()
-    {
-        HandleMovement();
-        HandleJump();
-        HandleGravity();
-    }
-
-
-    // =========================
-    // MOVEMENT
-    // =========================
-
-    private void HandleMovement()
-    {
-        float targetSpeed = moveInput * maxSpeed;
-
-        float speedChange;
-
-        if (moveInput != 0)
-        {
-            speedChange = acceleration;
-        }
-        else
-        {
-            speedChange = deceleration;
-        }
-
-        float newSpeed = Mathf.MoveTowards(
-            rb.linearVelocity.x,
-            targetSpeed,
-            speedChange * Time.fixedDeltaTime
-        );
-
-        rb.linearVelocity = new Vector2(
-            newSpeed,
-            rb.linearVelocity.y
-        );
-    }
-
-
-    // =========================
-    // JUMP
-    // =========================
-
-    private void HandleJump()
-    {
-        if (jumpPressed && IsGrounded())
-        {
-            rb.linearVelocity = new Vector2(
-                rb.linearVelocity.x,
-                jumpForce
-            );
-        }
 
         jumpPressed = false;
     }
 
+    private void PerformJump()
+    {
+        // Calculate the exact velocity needed
+        // to reach the desired jump height.
+        float jumpVelocity =
+            Mathf.Sqrt(
+                2f *
+                jumpGravity *
+                jumpHeight
+            );
 
-    // =========================
+        rb.linearVelocity = new Vector2(
+            rb.linearVelocity.x,
+            jumpVelocity
+        );
+    }
+
+    // =========================================================
     // GRAVITY
-    // =========================
+    // =========================================================
 
     private void HandleGravity()
     {
-        // When falling, smoothly increase gravity
-        // instead of instantly changing velocity.
+        float gravity = jumpGravity;
 
+        // Falling = stronger gravity
         if (rb.linearVelocity.y < 0)
         {
-            float extraGravity =
-                Physics2D.gravity.y *
-                (fallGravityMultiplier - 1);
-
-            rb.AddForce(
-                Vector2.up * extraGravity,
-                ForceMode2D.Force
-            );
+            gravity *= fallGravityMultiplier;
         }
+
+        rb.linearVelocity +=
+            Vector2.down *
+            gravity *
+            Time.fixedDeltaTime;
     }
 
-
-    // =========================
+    // =========================================================
     // GROUND CHECK
-    // =========================
+    // =========================================================
 
-    private bool IsGrounded()
+    private void CheckGround()
     {
-        return Physics2D.OverlapCircle(
+        bool previousGrounded = isGrounded;
+
+        isGrounded = Physics2D.OverlapCircle(
             groundCheck.position,
             groundCheckRadius,
             groundLayer
+        );
+
+        // Just landed or currently grounded
+        if (isGrounded)
+        {
+            coyoteCounter = coyoteTime;
+        }
+
+        // Just walked off a platform
+        if (previousGrounded && !isGrounded)
+        {
+            coyoteCounter = coyoteTime;
+        }
+    }
+
+    // =========================================================
+    // DEBUG
+    // =========================================================
+
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheck == null)
+            return;
+
+        Gizmos.color = Color.green;
+
+        Gizmos.DrawWireSphere(
+            groundCheck.position,
+            groundCheckRadius
         );
     }
 }
