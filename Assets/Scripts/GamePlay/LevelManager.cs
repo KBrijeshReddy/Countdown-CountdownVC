@@ -417,6 +417,39 @@ public class LevelManager : MonoBehaviour
         UpdateTimerUI();
     }
 
+    // =========================================================
+// REMOVE TIME
+// =========================================================
+
+public void RemoveTime(
+    float amount
+)
+{
+    if (amount < 0f)
+    {
+        return;
+    }
+
+    remainingTime -=
+        amount;
+
+    // Never allow the timer
+    // to go below zero.
+    if (remainingTime < 0f)
+    {
+        remainingTime =
+            0f;
+    }
+
+    UpdateTimerUI();
+
+    Debug.Log(
+        amount +
+        " seconds removed. Remaining time: " +
+        remainingTime
+    );
+}
+
 
     // =========================================================
     // PLAYER MOVEMENT

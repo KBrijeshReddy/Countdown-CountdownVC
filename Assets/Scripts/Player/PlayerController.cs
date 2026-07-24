@@ -53,8 +53,7 @@ public class PlayerController : MonoBehaviour
     private float jumpBufferCounter;
 
     private bool isGrounded;
-
-
+    
     // =========================================================
     // AWAKE
     // =========================================================
@@ -93,10 +92,7 @@ public class PlayerController : MonoBehaviour
 
         HandleBlockedMovementShake();
 
-        // Countdown camera shake cooldown.
-        if (
-            blockedMovementShakeTimer > 0f
-        )
+        if (blockedMovementShakeTimer > 0f)
         {
             blockedMovementShakeTimer -=
                 Time.deltaTime;
@@ -440,77 +436,79 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     // =========================================================
     // BUY PHASE CAMERA SHAKE
     // =========================================================
 
-private void HandleBlockedMovementShake()
-{
-    // =====================================================
-    // CHECK LEVEL MANAGER
-    // =====================================================
-
-    if (levelManager == null)
+    private void HandleBlockedMovementShake()
     {
-        return;
+        // =====================================================
+        // CHECK LEVEL MANAGER
+        // =====================================================
+
+        if (levelManager == null)
+        {
+            return;
+        }
+
+
+        // =====================================================
+        // ONLY SHAKE DURING BUY PHASE
+        // =====================================================
+
+        if (!levelManager.IsBuyingPhase())
+        {
+            return;
+        }
+
+
+        // =====================================================
+        // CHECK MOVEMENT INPUT
+        // =====================================================
+
+        bool tryingToMove =
+            Keyboard.current.aKey.isPressed ||
+            Keyboard.current.dKey.isPressed ||
+            Keyboard.current.wKey.isPressed ||
+            Keyboard.current.spaceKey.isPressed;
+
+        if (!tryingToMove)
+        {
+            return;
+        }
+
+
+        // =====================================================
+        // COOLDOWN
+        // =====================================================
+
+        if (blockedMovementShakeTimer > 0f)
+        {
+            return;
+        }
+
+
+        // =====================================================
+        // SHAKE CAMERA
+        // =====================================================
+
+        if (CameraShake.Instance != null)
+        {
+            CameraShake.Instance.Shake(
+                blockedMovementShakeDuration,
+                blockedMovementShakeMagnitude
+            );
+        }
+
+
+        // =====================================================
+        // START COOLDOWN
+        // =====================================================
+
+        blockedMovementShakeTimer =
+            blockedMovementShakeCooldown;
     }
 
-
-    // =====================================================
-    // ONLY SHAKE DURING BUY PHASE
-    // =====================================================
-
-    if (!levelManager.IsBuyingPhase())
-    {
-        return;
-    }
-
-
-    // =====================================================
-    // CHECK MOVEMENT INPUT
-    // =====================================================
-
-    bool tryingToMove =
-        Keyboard.current.aKey.isPressed ||
-        Keyboard.current.dKey.isPressed || Keyboard.current.wKey.isPressed || Keyboard.current.spaceKey.isPressed;
-
-    if (!tryingToMove)
-    {
-        return;
-    }
-
-
-    // =====================================================
-    // COOLDOWN
-    // =====================================================
-
-    if (blockedMovementShakeTimer > 0f)
-    {
-        return;
-    }
-
-
-    // =====================================================
-    // SHAKE CAMERA
-    // =====================================================
-
-    if (CameraShake.Instance != null)
-    {
-        CameraShake.Instance.Shake(
-            blockedMovementShakeDuration,
-            blockedMovementShakeMagnitude
-        );
-    }
-
-
-    // =====================================================
-    // START COOLDOWN
-    // =====================================================
-
-    blockedMovementShakeTimer =
-        blockedMovementShakeCooldown;
-}
 
     // =========================================================
     // DEBUG
