@@ -4744,6 +4744,10 @@ PrefabInstance:
       value: PlacableGridArea
       objectReference: {fileID: 0}
     - target: {fileID: 6518102082071136937, guid: cb1790aabf76e8d4e983543db7783259, type: 3}
+      propertyPath: gridColor.a
+      value: 0.101960786
+      objectReference: {fileID: 0}
+    - target: {fileID: 6518102082071136937, guid: cb1790aabf76e8d4e983543db7783259, type: 3}
       propertyPath: blockedTilemap
       value: 
       objectReference: {fileID: 542271854}

@@ -11,7 +11,6 @@ public class PlaceableLifetime : MonoBehaviour
     [SerializeField] private TMP_Text timerText;
 
     [Header("Visual")]
-    [SerializeField] private SpriteRenderer timerVisual;
     [SerializeField] private Animator animatorVisual;
     [SerializeField] private GameObject destructionParticlesPrefab; 
     [SerializeField] private Color startColor = Color.blue;
@@ -80,9 +79,9 @@ public class PlaceableLifetime : MonoBehaviour
 
     private void UpdateVisual()
     {
-        if (timerVisual == null) return;
+        if (timerText == null) return;
         float t = lifetime > 0f ? Mathf.Clamp01(RemainingTime / lifetime) : 0f;
-        timerVisual.color = Color.Lerp(endColor, startColor, t);
+        timerText.color = Color.Lerp(endColor, startColor, t);
     }
 
     private void UpdateTimerText()

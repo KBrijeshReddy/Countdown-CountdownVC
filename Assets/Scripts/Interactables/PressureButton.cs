@@ -8,7 +8,7 @@ public class PressureButton : MonoBehaviour
     [SerializeField] private PlayerTriggerZone triggerZone;
 
     [Header("Visual")]
-    [SerializeField] private SpriteRenderer visual;
+    [SerializeField] private Animator animatorVisual;
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color pressedColor = Color.green;
 
@@ -32,8 +32,12 @@ public class PressureButton : MonoBehaviour
         if (!isPressed) return;
 
         activationTimer -= Time.deltaTime;
-        if (activationTimer <= 0f)
+        if (activationTimer <= 0f){
+            animatorVisual.SetBool("ButtonPressed", false);
+            animatorVisual.SetBool("ButtonStarted", true);
             SetPressed(false);
+            animatorVisual.SetBool("ButtonStarted", false);
+        }    
     }
 
     private void OnPlayerEntered(Collider2D player)
@@ -47,8 +51,16 @@ public class PressureButton : MonoBehaviour
     {
         isPressed = pressed;
 
-        if (visual != null)
-            visual.color = pressed ? pressedColor : normalColor;
+        if (animatorVisual != null){
+            if(pressed){
+                animatorVisual.SetBool("ButtonPressed", true);
+                animatorVisual.SetBool("ButtonStarted", true);
+            }
+
+            if(!pressed){
+                 animatorVisual.SetBool("ButtonPressed", false);
+            }
+        }
 
         connectedDoor?.SetOpen(pressed);
     }

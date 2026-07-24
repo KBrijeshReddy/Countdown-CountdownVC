@@ -168,6 +168,7 @@ MonoBehaviour:
   connectedDoor: {fileID: 0}
   triggerZone: {fileID: 6934855970506739128}
   visual: {fileID: 985150033826618083}
+  animatorVisual: {fileID: 281643744947205279}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 0.8954295, g: 1, b: 0, a: 1}
 --- !u!114 &7215802123876260589
@@ -297,6 +298,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3403889821313606480}
   - component: {fileID: 985150033826618083}
+  - component: {fileID: 281643744947205279}
   m_Layer: 3
   m_Name: ObjectVisual
   m_TagString: Untagged
@@ -379,3 +381,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!95 &281643744947205279
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8975264287999841016}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 17bfa165e363a494f8a11df4c88b8b43, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
