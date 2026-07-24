@@ -1,534 +1,180 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody2D), typeof(GroundSensor))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("MOVEMENT")]
+    [Header("Movement")]
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float acceleration = 80f;
     [SerializeField] private float deceleration = 100f;
 
-    [Header("JUMP")]
+    [Header("Jump")]
     [SerializeField] private float jumpHeight = 5f;
-    [SerializeField] private float jumpGravity = 35f;
-
-    [Tooltip("How much the jump is reduced when releasing jump early.")]
-    [Range(0.1f, 1f)]
-    [SerializeField] private float jumpCutMultiplier = 0.45f;
-
-    [Tooltip("How much stronger gravity becomes while falling.")]
+    [SerializeField] private float gravityStrength = 35f;
+    [SerializeField, Range(0.1f, 1f)] private float jumpCutMultiplier = 0.45f;
     [SerializeField] private float fallGravityMultiplier = 1.5f;
-
-    [Header("JUMP ASSIST")]
     [SerializeField] private float coyoteTime = 0.1f;
     [SerializeField] private float jumpBufferTime = 0.1f;
 
-    [Header("GROUND CHECK")]
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundCheckRadius = 0.15f;
-    [SerializeField] private LayerMask groundLayer;
-
-    [Header("GAME PHASE")]
-    [SerializeField] private LevelManager levelManager;
-
-    [Header("CAMERA SHAKE")]
-    [SerializeField] private CameraShake cameraShake;
-
-    [SerializeField] private float blockedMovementShakeDuration = 0.05f;
-
-    [SerializeField] private float blockedMovementShakeMagnitude = 0.05f;
-
-    [SerializeField] private float blockedMovementShakeCooldown = 0.15f;
-
-    private float blockedMovementShakeTimer;
+    [Header("Blocked-Move Feedback")]
+    [SerializeField] private float blockedShakeDuration = 0.05f;
+    [SerializeField] private float blockedShakeMagnitude = 0.05f;
+    [SerializeField] private float blockedShakeCooldown = 0.15f;
 
     private Rigidbody2D rb;
+    private GroundSensor groundSensor;
 
     private float moveInput;
-
-    private bool jumpPressed;
     private bool jumpHeld;
-
     private float coyoteCounter;
     private float jumpBufferCounter;
+    private float blockedShakeTimer;
 
-    private bool isGrounded;
-    
-    // =========================================================
-    // AWAKE
-    // =========================================================
+    private const float GroundStickVelocity = -2f;
+
+    private bool IsBuyPhase => LevelManager.Instance != null && LevelManager.Instance.IsBuyingPhase();
 
     private void Awake()
     {
-        rb =
-            GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
+        groundSensor = GetComponent<GroundSensor>();
 
-        // We control gravity ourselves.
-        rb.gravityScale =
-            0f;
-
-        // Prevent player from tunneling
-        // through platforms.
-        rb.collisionDetectionMode =
-            CollisionDetectionMode2D.Continuous;
-
-        // Prevent unwanted rotation.
-        rb.constraints =
-            RigidbodyConstraints2D.FreezeRotation;
+        rb.gravityScale = 0f; // gravity is fully custom, see ApplyGravity()
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
-
-
-    // =========================================================
-    // UPDATE
-    // =========================================================
 
     private void Update()
     {
-        GetInput();
-
-        CheckGround();
-
-        HandleJumpInput();
-
-        HandleBlockedMovementShake();
-
-        if (blockedMovementShakeTimer > 0f)
-        {
-            blockedMovementShakeTimer -=
-                Time.deltaTime;
-        }
+        ReadInput();
+        UpdateJumpTimers();
+        UpdateBlockedMoveFeedback();
     }
-
-
-    // =========================================================
-    // FIXED UPDATE
-    // =========================================================
 
     private void FixedUpdate()
     {
-        HandleMovement();
-
-        HandleGravity();
+        ApplyMovement();
+        ApplyGravity();
     }
 
-
-    // =========================================================
-    // INPUT
-    // =========================================================
-
-    private void GetInput()
+    private void ReadInput()
     {
-        moveInput =
-            0f;
+        var kb = Keyboard.current;
 
-        // A = Left.
-        if (
-            Keyboard.current.aKey.isPressed
-        )
-        {
-            moveInput =
-                -1f;
-        }
+        moveInput = 0f;
+        if (kb.aKey.isPressed) moveInput = -1f;
+        if (kb.dKey.isPressed) moveInput = 1f;
 
-        // D = Right.
-        if (
-            Keyboard.current.dKey.isPressed
-        )
-        {
-            moveInput =
-                1f;
-        }
+        if (kb.wKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame)
+            jumpBufferCounter = jumpBufferTime;
 
-        // Jump button pressed.
-        if (
-            Keyboard.current.wKey.wasPressedThisFrame ||
-            Keyboard.current.spaceKey.wasPressedThisFrame
-        )
-        {
-            jumpPressed =
-                true;
-
-            // Remember jump input briefly.
-            jumpBufferCounter =
-                jumpBufferTime;
-        }
-
-        // Jump button held.
-        jumpHeld =
-            Keyboard.current.wKey.isPressed ||
-            Keyboard.current.spaceKey.isPressed;
+        jumpHeld = kb.wKey.isPressed || kb.spaceKey.isPressed;
     }
 
-
-    // =========================================================
-    // MOVEMENT
-    // =========================================================
-
-    private void HandleMovement()
+    private void ApplyMovement()
     {
-        // =====================================================
-        // BUY PHASE
-        // =====================================================
-
-        if (
-            levelManager != null &&
-            levelManager.IsBuyingPhase()
-        )
+        if (IsBuyPhase)
         {
-            // Prevent horizontal movement.
-            rb.linearVelocity =
-                new Vector2(
-                    0f,
-                    rb.linearVelocity.y
-                );
-
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             return;
         }
 
+        float targetSpeed = moveInput * moveSpeed;
+        float currentSpeed = rb.linearVelocity.x;
+        float rate;
 
-        // =====================================================
-        // NORMAL MOVEMENT
-        // =====================================================
-
-        float targetSpeed =
-            moveInput *
-            moveSpeed;
-
-        float currentSpeed =
-            rb.linearVelocity.x;
-
-        // Player is pressing A or D.
-        if (
-            moveInput != 0
-        )
+        if (moveInput == 0f)
         {
-            // If changing direction,
-            // respond quickly.
-            if (
-                Mathf.Sign(targetSpeed) !=
-                Mathf.Sign(currentSpeed) &&
-                Mathf.Abs(currentSpeed) > 0.1f
-            )
-            {
-                currentSpeed =
-                    Mathf.MoveTowards(
-                        currentSpeed,
-                        targetSpeed,
-                        acceleration *
-                        1.5f *
-                        Time.fixedDeltaTime
-                    );
-            }
-            else
-            {
-                // Normal acceleration.
-                currentSpeed =
-                    Mathf.MoveTowards(
-                        currentSpeed,
-                        targetSpeed,
-                        acceleration *
-                        Time.fixedDeltaTime
-                    );
-            }
+            targetSpeed = 0f;
+            rate = deceleration;
         }
         else
         {
-            // No input = quickly stop.
-            currentSpeed =
-                Mathf.MoveTowards(
-                    currentSpeed,
-                    0f,
-                    deceleration *
-                    Time.fixedDeltaTime
-                );
+            bool changingDirection =
+                Mathf.Sign(targetSpeed) != Mathf.Sign(currentSpeed) &&
+                Mathf.Abs(currentSpeed) > 0.1f;
+
+            rate = changingDirection ? acceleration * 1.5f : acceleration;
         }
 
-        rb.linearVelocity =
-            new Vector2(
-                currentSpeed,
-                rb.linearVelocity.y
-            );
+        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, rate * Time.fixedDeltaTime);
+        rb.linearVelocity = new Vector2(currentSpeed, rb.linearVelocity.y);
     }
 
-
-    // =========================================================
-    // JUMP
-    // =========================================================
-
-    private void HandleJumpInput()
+    private void UpdateJumpTimers()
     {
-        // =====================================================
-        // BUY PHASE
-        // =====================================================
-
-        if (
-            levelManager != null &&
-            levelManager.IsBuyingPhase()
-        )
+        if (IsBuyPhase)
         {
-            jumpBufferCounter =
-                0f;
-
-            jumpPressed =
-                false;
-
+            jumpBufferCounter = 0f;
             return;
         }
 
+        if (jumpBufferCounter > 0f)
+            jumpBufferCounter -= Time.deltaTime;
 
-        // =====================================================
-        // NORMAL JUMP
-        // =====================================================
+        coyoteCounter = groundSensor.IsGrounded ? coyoteTime : coyoteCounter - Time.deltaTime;
 
-        // Countdown jump buffer.
-        if (
-            jumpBufferCounter > 0
-        )
-        {
-            jumpBufferCounter -=
-                Time.deltaTime;
-        }
-
-        // Countdown coyote time.
-        if (
-            !isGrounded
-        )
-        {
-            coyoteCounter -=
-                Time.deltaTime;
-        }
-
-        // Jump if we pressed jump recently
-        // and are allowed to jump.
-        if (
-            jumpBufferCounter > 0 &&
-            coyoteCounter > 0
-        )
+        if (jumpBufferCounter > 0f && coyoteCounter > 0f)
         {
             PerformJump();
-
-            jumpBufferCounter =
-                0f;
-
-            coyoteCounter =
-                0f;
-
-            jumpPressed =
-                false;
+            jumpBufferCounter = 0f;
+            coyoteCounter = 0f;
         }
 
-        // Release jump early.
-        if (
-            !jumpHeld &&
-            rb.linearVelocity.y > 0
-        )
-        {
-            rb.linearVelocity =
-                new Vector2(
-                    rb.linearVelocity.x,
-                    rb.linearVelocity.y *
-                    jumpCutMultiplier
-                );
-        }
-
-        jumpPressed =
-            false;
+        // Variable jump height: cut upward velocity if the button was released early.
+        if (!jumpHeld && rb.linearVelocity.y > 0f)
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
     }
-
-
-    // =========================================================
-    // PERFORM JUMP
-    // =========================================================
 
     private void PerformJump()
     {
-        // Calculate exact velocity needed
-        // to reach desired jump height.
-        float jumpVelocity =
-            Mathf.Sqrt(
-                2f *
-                jumpGravity *
-                jumpHeight
-            );
-
-        rb.linearVelocity =
-            new Vector2(
-                rb.linearVelocity.x,
-                jumpVelocity
-            );
+        float jumpVelocity = Mathf.Sqrt(2f * gravityStrength * jumpHeight);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpVelocity);
     }
 
-
-    // =========================================================
-    // GRAVITY
-    // =========================================================
-
-    private void HandleGravity()
+    private void ApplyGravity()
     {
-        // If standing on ground,
-        // completely stop downward velocity.
-        if (
-            isGrounded &&
-            rb.linearVelocity.y <= 0
-        )
+        if (IsBuyPhase)
         {
-            rb.linearVelocity =
-                new Vector2(
-                    rb.linearVelocity.x,
-                    0f
-                );
-
+            // Player's collider is disabled during Buy Phase, so there's
+            // nothing to physically resolve contact with. Any nonzero
+            // velocity here would just integrate into position unopposed
+            // and the player would sink through the floor.
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             return;
         }
 
-        float gravity =
-            jumpGravity;
-
-        // Falling = stronger gravity.
-        if (
-            rb.linearVelocity.y < 0
-        )
+        if (groundSensor.IsGrounded && rb.linearVelocity.y <= 0f)
         {
-            gravity *=
-                fallGravityMultiplier;
-        }
-
-        rb.linearVelocity +=
-            Vector2.down *
-            gravity *
-            Time.fixedDeltaTime;
-    }
-
-
-    // =========================================================
-    // GROUND CHECK
-    // =========================================================
-
-    private void CheckGround()
-    {
-        bool previousGrounded =
-            isGrounded;
-
-        isGrounded =
-            Physics2D.OverlapCircle(
-                groundCheck.position,
-                groundCheckRadius,
-                groundLayer
-            );
-
-        // Just landed or currently grounded.
-        if (
-            isGrounded
-        )
-        {
-            coyoteCounter =
-                coyoteTime;
-        }
-
-        // Just walked off a platform.
-        if (
-            previousGrounded &&
-            !isGrounded
-        )
-        {
-            coyoteCounter =
-                coyoteTime;
-        }
-    }
-
-    // =========================================================
-    // BUY PHASE CAMERA SHAKE
-    // =========================================================
-
-    private void HandleBlockedMovementShake()
-    {
-        // =====================================================
-        // CHECK LEVEL MANAGER
-        // =====================================================
-
-        if (levelManager == null)
-        {
+            // Small downward "stick" instead of zero keeps physics
+            // continuously resolving ground contact, preventing the
+            // player from floating just above a surface after landing.
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, GroundStickVelocity);
             return;
         }
 
+        float gravity = gravityStrength;
+        if (rb.linearVelocity.y < 0f)
+            gravity *= fallGravityMultiplier;
 
-        // =====================================================
-        // ONLY SHAKE DURING BUY PHASE
-        // =====================================================
+        rb.linearVelocity += Vector2.down * gravity * Time.fixedDeltaTime;
+    }
 
-        if (!levelManager.IsBuyingPhase())
-        {
+    private void UpdateBlockedMoveFeedback()
+    {
+        if (blockedShakeTimer > 0f)
+            blockedShakeTimer -= Time.deltaTime;
+
+        if (!IsBuyPhase || blockedShakeTimer > 0f)
             return;
-        }
 
-
-        // =====================================================
-        // CHECK MOVEMENT INPUT
-        // =====================================================
-
-        bool tryingToMove =
-            Keyboard.current.aKey.isPressed ||
-            Keyboard.current.dKey.isPressed ||
-            Keyboard.current.wKey.isPressed ||
-            Keyboard.current.spaceKey.isPressed;
-
+        var kb = Keyboard.current;
+        bool tryingToMove = kb.aKey.isPressed || kb.dKey.isPressed || kb.wKey.isPressed || kb.spaceKey.isPressed;
         if (!tryingToMove)
-        {
             return;
-        }
 
-
-        // =====================================================
-        // COOLDOWN
-        // =====================================================
-
-        if (blockedMovementShakeTimer > 0f)
-        {
-            return;
-        }
-
-
-        // =====================================================
-        // SHAKE CAMERA
-        // =====================================================
-
-        if (CameraShake.Instance != null)
-        {
-            CameraShake.Instance.Shake(
-                blockedMovementShakeDuration,
-                blockedMovementShakeMagnitude
-            );
-        }
-
-
-        // =====================================================
-        // START COOLDOWN
-        // =====================================================
-
-        blockedMovementShakeTimer =
-            blockedMovementShakeCooldown;
-    }
-
-
-    // =========================================================
-    // DEBUG
-    // =========================================================
-
-    private void OnDrawGizmosSelected()
-    {
-        if (
-            groundCheck == null
-        )
-        {
-            return;
-        }
-
-        Gizmos.color =
-            Color.green;
-
-        Gizmos.DrawWireSphere(
-            groundCheck.position,
-            groundCheckRadius
-        );
+        CameraShake.Instance?.Shake(blockedShakeDuration, blockedShakeMagnitude);
+        blockedShakeTimer = blockedShakeCooldown;
     }
 }

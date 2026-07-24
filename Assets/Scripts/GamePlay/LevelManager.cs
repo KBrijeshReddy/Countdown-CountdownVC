@@ -6,556 +6,150 @@ using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
-    // =========================================================
-    // GAME PHASE
-    // =========================================================
-
-    public enum GamePhase
-    {
-        Buying,
-        Puzzle
-    }
+    public enum GamePhase { Buying, Puzzle }
 
     [Header("Game Phase")]
-    public GamePhase currentPhase =
-        GamePhase.Buying;
-
-
-    // =========================================================
-    // TIMER
-    // =========================================================
+    [SerializeField] private GamePhase currentPhase = GamePhase.Buying;
 
     [Header("Timer")]
-
-    public float startingTime = 200f;
-
-    private float remainingTime;
-
-    private Coroutine timerCoroutine;
-
-
-    // =========================================================
-    // TIMER UI
-    // =========================================================
-
-    [Header("Timer UI")]
-
-    public TMP_Text timerText;
-
-
-    // =========================================================
-    // START BUTTON
-    // =========================================================
+    [SerializeField] private float startingTime = 200f;
+    [SerializeField] private TMP_Text timerText;
 
     [Header("Start Button")]
-
-    public Button startButton;
-
-
-    // =========================================================
-    // PLAYER
-    // =========================================================
+    [SerializeField] private Button startButton;
 
     [Header("Player")]
-
-    public GameObject player;
-
-    [Header("Player Movement Script")]
-
-    public MonoBehaviour playerMovementScript;
-
-    [Header("Player Collider")]
-
-    public Collider2D playerCollider;
-
-
-    // =========================================================
-    // GRID
-    // =========================================================
+    [SerializeField] private MonoBehaviour playerMovementScript;
+    [SerializeField] private Collider2D playerCollider;
 
     [Header("Grid")]
+    [SerializeField] private GridManager gridManager;
 
-    public GridManager gridManager;
+    private float remainingTime;
+    private Coroutine timerRoutine;
 
+    public float RemainingTime => remainingTime;
 
-    // =========================================================
-    // REMAINING TIME
-    // =========================================================
-
-    public float RemainingTime
-    {
-        get
-        {
-            return remainingTime;
-        }
-    }
-
-
-    // =========================================================
-    // AWAKE
-    // =========================================================
+    public static LevelManager Instance { get; private set; }
 
     private void Awake()
     {
-        Debug.Log(
-            "LEVEL MANAGER AWAKE"
-        );
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
     }
-
-
-    // =========================================================
-    // START
-    // =========================================================
 
     private void Start()
     {
-        // Start in Buying Phase.
-        currentPhase =
-            GamePhase.Buying;
-
-        // Set starting time.
-        remainingTime =
-            startingTime;
-
-        // Update timer display.
+        currentPhase = GamePhase.Buying;
+        remainingTime = startingTime;
         UpdateTimerUI();
 
+        SetPlayerMovement(true);
+        SetPlayerCollider(false);
+        SetGridVisual(true);
 
-        // =====================================================
-        // PLAYER
-        // =====================================================
-
-        // IMPORTANT:
-        // Keep PlayerController ENABLED.
-        //
-        // PlayerController needs to remain active so it can
-        // detect the player attempting to move during the
-        // Buy Phase and trigger the camera shake.
-        //
-        // PlayerController itself will prevent actual
-        // movement while IsBuyingPhase() is true.
-
-        SetPlayerMovement(
-            true
-        );
-
-
-        // Disable player collider.
-        SetPlayerCollider(
-            false
-        );
-
-
-        // =====================================================
-        // GRID
-        // =====================================================
-
-        // Show grid during Buy Phase.
-        SetGridVisual(
-            true
-        );
-
-
-        // =====================================================
-        // START BUTTON
-        // =====================================================
-
-        if (
-            startButton != null
-        )
-        {
-            startButton.interactable =
-                true;
-        }
-
-
-        Debug.Log(
-            "LEVEL MANAGER STARTED"
-        );
+        if (startButton != null)
+            startButton.interactable = true;
     }
-
-
-    // =========================================================
-    // START PUZZLE
-    // =========================================================
 
     public void StartPuzzle()
     {
-        // Prevent starting twice.
-        if (
-            currentPhase ==
-            GamePhase.Puzzle
-        )
-        {
+        if (currentPhase == GamePhase.Puzzle)
             return;
-        }
 
+        currentPhase = GamePhase.Puzzle;
 
-        Debug.Log(
-            "START PUZZLE FUNCTION CALLED"
-        );
+        SetPlayerMovement(true);
+        SetPlayerCollider(true);
+        SetGridVisual(false);
 
+        if (startButton != null)
+            startButton.interactable = false;
 
-        // =====================================================
-        // CHANGE PHASE
-        // =====================================================
+        if (timerRoutine != null)
+            StopCoroutine(timerRoutine);
 
-        currentPhase =
-            GamePhase.Puzzle;
-
-
-        Debug.Log(
-            "CURRENT PHASE IS NOW: " +
-            currentPhase
-        );
-
-
-        // =====================================================
-        // PLAYER MOVEMENT
-        // =====================================================
-
-        // Keep PlayerController ENABLED.
-        //
-        // It will now automatically allow movement because
-        // IsBuyingPhase() returns false.
-
-        SetPlayerMovement(
-            true
-        );
-
-
-        // =====================================================
-        // PLAYER COLLIDER
-        // =====================================================
-
-        // Enable player collider.
-        SetPlayerCollider(
-            true
-        );
-
-
-        // =====================================================
-        // GRID VISUAL
-        // =====================================================
-
-        // Hide grid when puzzle begins.
-        SetGridVisual(
-            false
-        );
-
-
-        // =====================================================
-        // START BUTTON
-        // =====================================================
-
-        if (
-            startButton != null
-        )
-        {
-            startButton.interactable =
-                false;
-        }
-
-
-        // =====================================================
-        // START TIMER
-        // =====================================================
-
-        if (
-            timerCoroutine != null
-        )
-        {
-            StopCoroutine(
-                timerCoroutine
-            );
-        }
-
-        timerCoroutine =
-            StartCoroutine(
-                RunTimer()
-            );
-
-
-        Debug.Log(
-            "TIMER COROUTINE STARTED"
-        );
+        timerRoutine = StartCoroutine(RunTimer());
     }
-
-
-    // =========================================================
-    // TIMER
-    // =========================================================
 
     private IEnumerator RunTimer()
     {
-        while (
-            remainingTime > 0f
-        )
+        while (remainingTime > 0f)
         {
-            // Wait one real-time frame.
             yield return null;
 
-
-            // Subtract real frame time.
-            remainingTime -=
-                Time.unscaledDeltaTime;
-
-
-            // Prevent negative values.
-            if (
-                remainingTime < 0f
-            )
-            {
-                remainingTime =
-                    0f;
-            }
-
-
-            // Update timer UI.
+            remainingTime = Mathf.Max(0f, remainingTime - Time.unscaledDeltaTime);
             UpdateTimerUI();
         }
 
-
-        // =====================================================
-        // TIME RAN OUT
-        // =====================================================
-
-        Debug.Log(
-            "TIME RAN OUT"
-        );
-
-
-        remainingTime =
-            0f;
-
-
-        UpdateTimerUI();
-
-
-        // Restart level.
         RestartLevel();
     }
 
+    public bool IsBuyingPhase() => currentPhase == GamePhase.Buying;
+    public bool IsPuzzlePhase() => currentPhase == GamePhase.Puzzle;
 
-    // =========================================================
-    // BUYING PHASE CHECK
-    // =========================================================
-
-    public bool IsBuyingPhase()
+    /// Spends time only if enough remains. Used for purchases.
+    public bool SpendTime(float amount)
     {
-        return currentPhase ==
-            GamePhase.Buying;
-    }
-
-
-    // =========================================================
-    // PUZZLE PHASE CHECK
-    // =========================================================
-
-    public bool IsPuzzlePhase()
-    {
-        return currentPhase ==
-            GamePhase.Puzzle;
-    }
-
-
-    // =========================================================
-    // SPEND TIME
-    // =========================================================
-
-    public bool SpendTime(
-        float amount
-    )
-    {
-        if (
-            amount < 0f
-        )
-        {
+        if (amount < 0f || remainingTime < amount)
             return false;
-        }
 
-
-        if (
-            remainingTime < amount
-        )
-        {
-            return false;
-        }
-
-
-        remainingTime -=
-            amount;
-
-
+        remainingTime -= amount;
         UpdateTimerUI();
-
-
         return true;
     }
 
-
-    // =========================================================
-    // ADD TIME
-    // =========================================================
-
-    public void AddTime(
-        float amount
-    )
+    public void AddTime(float amount)
     {
-        if (
-            amount < 0f
-        )
-        {
-            return;
-        }
+        if (amount < 0f) return;
 
-
-        remainingTime +=
-            amount;
-
-
+        remainingTime += amount;
         UpdateTimerUI();
     }
 
-    // =========================================================
-// REMOVE TIME
-// =========================================================
-
-public void RemoveTime(
-    float amount
-)
-{
-    if (amount < 0f)
+    /// Removes time unconditionally, clamped to zero. Used for hazard penalties.
+    public void RemoveTime(float amount)
     {
-        return;
+        if (amount < 0f) return;
+
+        remainingTime = Mathf.Max(0f, remainingTime - amount);
+        UpdateTimerUI();
     }
 
-    remainingTime -=
-        amount;
-
-    // Never allow the timer
-    // to go below zero.
-    if (remainingTime < 0f)
+    private void SetPlayerMovement(bool active)
     {
-        remainingTime =
-            0f;
+        // PlayerController stays enabled at all times and gates its own
+        // movement internally based on game phase — this only guards
+        // against it having been left disabled some other way.
+        if (playerMovementScript != null && !playerMovementScript.enabled)
+            playerMovementScript.enabled = true;
     }
 
-    UpdateTimerUI();
-
-    Debug.Log(
-        amount +
-        " seconds removed. Remaining time: " +
-        remainingTime
-    );
-}
-
-
-    // =========================================================
-    // PLAYER MOVEMENT
-    // =========================================================
-
-    public void SetPlayerMovement(
-        bool active
-    )
+    private void SetPlayerCollider(bool active)
     {
-        if (
-            playerMovementScript != null
-        )
-        {
-            // IMPORTANT:
-            // The PlayerController should remain enabled.
-            //
-            // The PlayerController itself decides whether
-            // movement is allowed based on the current phase.
-            //
-            // Therefore, we intentionally do NOT disable
-            // playerMovementScript here.
-
-            if (
-                !playerMovementScript.enabled
-            )
-            {
-                playerMovementScript.enabled =
-                    true;
-            }
-        }
+        if (playerCollider != null)
+            playerCollider.enabled = active;
     }
 
-
-    // =========================================================
-    // PLAYER COLLIDER
-    // =========================================================
-
-    private void SetPlayerCollider(
-        bool active
-    )
+    private void SetGridVisual(bool visible)
     {
-        if (
-            playerCollider != null
-        )
-        {
-            playerCollider.enabled =
-                active;
-        }
+        if (gridManager != null)
+            gridManager.ShowGridVisual = visible;
     }
-
-
-    // =========================================================
-    // GRID VISUAL
-    // =========================================================
-
-    private void SetGridVisual(
-        bool visible
-    )
-    {
-        if (
-            gridManager != null
-        )
-        {
-            gridManager.showGridVisual =
-                visible;
-        }
-    }
-
-
-    // =========================================================
-    // UPDATE TIMER UI
-    // =========================================================
 
     private void UpdateTimerUI()
     {
-        if (
-            timerText == null
-        )
-        {
-            return;
-        }
-
-
-        int seconds =
-            Mathf.CeilToInt(
-                remainingTime
-            );
-
-
-        timerText.text =
-            seconds.ToString();
+        if (timerText != null)
+            timerText.text = Mathf.CeilToInt(remainingTime).ToString();
     }
-
-
-    // =========================================================
-    // RESTART LEVEL
-    // =========================================================
 
     private void RestartLevel()
     {
-        Scene currentScene =
-            SceneManager.GetActiveScene();
-
-
-        SceneManager.LoadScene(
-            currentScene.buildIndex
-        );
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
