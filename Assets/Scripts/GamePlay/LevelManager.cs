@@ -1,12 +1,17 @@
+using System;
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
-    public enum GamePhase { Buying, Puzzle }
+    public enum GamePhase
+    {
+        Buying,
+        Puzzle
+    }
 
     [Header("Game Phase")]
     [SerializeField] private GamePhase currentPhase = GamePhase.Buying;
@@ -28,9 +33,11 @@ public class LevelManager : MonoBehaviour
     private float remainingTime;
     private Coroutine timerRoutine;
 
+    public static LevelManager Instance { get; private set; }
+
     public float RemainingTime => remainingTime;
 
-    public static LevelManager Instance { get; private set; }
+    public event Action PuzzlePhaseStarted;
 
     private void Awake()
     {
@@ -47,6 +54,7 @@ public class LevelManager : MonoBehaviour
     {
         currentPhase = GamePhase.Buying;
         remainingTime = startingTime;
+
         UpdateTimerUI();
 
         SetPlayerMovement(true);
@@ -74,6 +82,8 @@ public class LevelManager : MonoBehaviour
         if (timerRoutine != null)
             StopCoroutine(timerRoutine);
 
+        PuzzlePhaseStarted?.Invoke();
+
         timerRoutine = StartCoroutine(RunTimer());
     }
 
@@ -83,17 +93,27 @@ public class LevelManager : MonoBehaviour
         {
             yield return null;
 
-            remainingTime = Mathf.Max(0f, remainingTime - Time.unscaledDeltaTime);
+            remainingTime = Mathf.Max(
+                0f,
+                remainingTime - Time.unscaledDeltaTime
+            );
+
             UpdateTimerUI();
         }
 
         RestartLevel();
     }
 
-    public bool IsBuyingPhase() => currentPhase == GamePhase.Buying;
-    public bool IsPuzzlePhase() => currentPhase == GamePhase.Puzzle;
+    public bool IsBuyingPhase()
+    {
+        return currentPhase == GamePhase.Buying;
+    }
 
-    /// Spends time only if enough remains. Used for purchases.
+    public bool IsPuzzlePhase()
+    {
+        return currentPhase == GamePhase.Puzzle;
+    }
+
     public bool SpendTime(float amount)
     {
         if (amount < 0f || remainingTime < amount)
@@ -101,33 +121,39 @@ public class LevelManager : MonoBehaviour
 
         remainingTime -= amount;
         UpdateTimerUI();
+
         return true;
     }
 
     public void AddTime(float amount)
     {
-        if (amount < 0f) return;
+        if (amount < 0f)
+            return;
 
         remainingTime += amount;
         UpdateTimerUI();
     }
 
-    /// Removes time unconditionally, clamped to zero. Used for hazard penalties.
     public void RemoveTime(float amount)
     {
-        if (amount < 0f) return;
+        if (amount < 0f)
+            return;
 
-        remainingTime = Mathf.Max(0f, remainingTime - amount);
+        remainingTime = Mathf.Max(
+            0f,
+            remainingTime - amount
+        );
+
         UpdateTimerUI();
     }
 
     private void SetPlayerMovement(bool active)
     {
-        // PlayerController stays enabled at all times and gates its own
-        // movement internally based on game phase — this only guards
-        // against it having been left disabled some other way.
-        if (playerMovementScript != null && !playerMovementScript.enabled)
+        if (playerMovementScript != null &&
+            !playerMovementScript.enabled)
+        {
             playerMovementScript.enabled = true;
+        }
     }
 
     private void SetPlayerCollider(bool active)
@@ -145,11 +171,17 @@ public class LevelManager : MonoBehaviour
     private void UpdateTimerUI()
     {
         if (timerText != null)
-            timerText.text = Mathf.CeilToInt(remainingTime).ToString();
+        {
+            timerText.text = Mathf.CeilToInt(
+                remainingTime
+            ).ToString();
+        }
     }
 
     private void RestartLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(
+            SceneManager.GetActiveScene().buildIndex
+        );
     }
 }
