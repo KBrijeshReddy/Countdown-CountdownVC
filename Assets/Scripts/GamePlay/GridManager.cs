@@ -23,9 +23,12 @@ public class GridManager : MonoBehaviour
 
     private GridFootprint[,] occupiedCells;
 
+    public static GridManager Instance { get; private set; }
+
     private void Awake()
     {
         occupiedCells = new GridFootprint[gridWidth, gridHeight];
+        Instance = this;
     }
 
     public Vector2Int WorldToGrid(Vector2 worldPosition)

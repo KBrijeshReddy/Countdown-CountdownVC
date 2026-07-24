@@ -4,9 +4,7 @@ using UnityEngine.InputSystem;
 public class PlaceableDragHandler : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private GridManager gridManager;
     [SerializeField] private GridFootprint footprint;
-    [SerializeField] private BuyArea buyArea;
     [SerializeField] private Collider2D dragCollider;
 
     [Header("Drag Feel")]
@@ -94,8 +92,8 @@ public class PlaceableDragHandler : MonoBehaviour
         dragStartedOnGrid = isPlacedOnGrid;
         dragStartGridPosition = gridPosition;
 
-        if (isPlacedOnGrid && gridManager != null)
-            gridManager.RemoveObject(gridPosition, footprint);
+        if (isPlacedOnGrid && GridManager.Instance != null)
+            GridManager.Instance.RemoveObject(gridPosition, footprint);
 
         mouseWorldPosition.z = transform.position.z;
         mouseOffset = transform.position - mouseWorldPosition;
@@ -113,10 +111,10 @@ public class PlaceableDragHandler : MonoBehaviour
 
         Vector3 targetPosition = mouseWorldPosition + mouseOffset;
 
-        if (gridManager != null && footprint != null)
+        if (GridManager.Instance != null && footprint != null)
         {
-            Vector2Int snapped = gridManager.WorldToObjectGrid(targetPosition, footprint);
-            Vector2 snappedWorld = gridManager.ObjectGridToWorld(snapped, footprint);
+            Vector2Int snapped = GridManager.Instance.WorldToObjectGrid(targetPosition, footprint);
+            Vector2 snappedWorld = GridManager.Instance.ObjectGridToWorld(snapped, footprint);
             transform.position = new Vector3(snappedWorld.x, snappedWorld.y, dragStartPosition.z);
         }
         else
@@ -127,17 +125,17 @@ public class PlaceableDragHandler : MonoBehaviour
 
     private void UpdatePlacementPreview()
     {
-        if (gridManager == null || footprint == null) return;
+        if (GridManager.Instance == null || footprint == null) return;
 
-        if (buyArea != null && buyArea.IsInsideBuyArea(transform.position))
+        if (BuyArea.Instance != null && BuyArea.Instance.IsInsideBuyArea(transform.position))
         {
             previewValid = false;
             SetVisualColor(normalColor);
             return;
         }
 
-        previewGridPosition = gridManager.WorldToObjectGrid(transform.position, footprint);
-        previewValid = gridManager.CanPlaceObject(previewGridPosition, footprint);
+        previewGridPosition = GridManager.Instance.WorldToObjectGrid(transform.position, footprint);
+        previewValid = GridManager.Instance.CanPlaceObject(previewGridPosition, footprint);
 
         SetVisualColor(previewValid ? validColor : invalidColor);
     }
@@ -147,7 +145,7 @@ public class PlaceableDragHandler : MonoBehaviour
         isDragging = false;
         transform.localScale = originalScale;
 
-        if (buyArea != null && buyArea.IsInsideBuyArea(transform.position))
+        if (BuyArea.Instance != null && BuyArea.Instance.IsInsideBuyArea(transform.position))
         {
             ReturnToBuyArea();
             return;
@@ -173,10 +171,10 @@ public class PlaceableDragHandler : MonoBehaviour
         gridPosition = previewGridPosition;
         isPlacedOnGrid = true;
 
-        Vector2 snapped = gridManager.ObjectGridToWorld(gridPosition, footprint);
+        Vector2 snapped = GridManager.Instance.ObjectGridToWorld(gridPosition, footprint);
         transform.position = new Vector3(snapped.x, snapped.y, dragStartPosition.z);
 
-        gridManager.PlaceObject(gridPosition, footprint);
+        GridManager.Instance.PlaceObject(gridPosition, footprint);
         SetVisualColor(normalColor);
     }
 
@@ -200,7 +198,7 @@ public class PlaceableDragHandler : MonoBehaviour
         if (dragStartedOnGrid)
         {
             gridPosition = dragStartGridPosition;
-            gridManager.PlaceObject(gridPosition, footprint);
+            GridManager.Instance.PlaceObject(gridPosition, footprint);
         }
 
         SetVisualColor(normalColor);

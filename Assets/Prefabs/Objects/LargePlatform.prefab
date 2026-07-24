@@ -576,9 +576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb71f05d96604f4a8bccc9843c29456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
-  gridManager: {fileID: 0}
   footprint: {fileID: 7906325181262957807}
-  buyArea: {fileID: 0}
   dragCollider: {fileID: 450780436467452578}
   pickupScale: 1.08
   visual: {fileID: 5764349853801555569}
@@ -628,7 +626,7 @@ MonoBehaviour:
   timerEnabled: 1
   timerText: {fileID: 8617577877439612939}
   animatorVisual: {fileID: 2042486511698574131}
-  destructionParticlesPrefab: {fileID: 7507987575906636220, guid: cb83a33a648c8a54fb2728a3c670abaa, type: 3}
+  destructionParticlesPrefab: {fileID: 718716510680618536, guid: 5e48f40ba1938c347b7926553d037176, type: 3}
   startColor: {r: 1, g: 1, b: 1, a: 1}
   endColor: {r: 1, g: 0.48113203, b: 0.48113203, a: 1}
 --- !u!114 &6467113850753886054
