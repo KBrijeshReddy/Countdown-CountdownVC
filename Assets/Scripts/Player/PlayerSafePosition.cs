@@ -133,53 +133,25 @@ public class PlayerSafePosition : MonoBehaviour
     // =========================================================
 
     public void TeleportToLastSafePosition()
+{
+    if (rb != null)
     {
-        Debug.Log(
-            "TELEPORT REQUEST RECEIVED!"
-        );
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
 
-        Debug.Log(
-            "SAFE POSITION IS: " +
-            lastSafePosition
-        );
-
-        // =====================================================
-        // STOP MOVEMENT
-        // =====================================================
-
-        if (
-            rb != null
-        )
-        {
-            rb.linearVelocity =
-                Vector2.zero;
-
-            rb.angularVelocity =
-                0f;
-        }
-
-        // =====================================================
-        // TELEPORT
-        // =====================================================
-
-        transform.position =
-            lastSafePosition;
-
-        // =====================================================
-        // RESET GROUND STATE
-        // =====================================================
-
-        wasGrounded =
-            false;
-
-        // =====================================================
-        // DEBUG
-        // =====================================================
-
-        Debug.Log(
-            "PLAYER TELEPORTED SUCCESSFULLY!"
-        );
+        // This is the critical line — must move the Rigidbody2D itself,
+        // not just transform.position, or physics will snap it back.
+        rb.position = lastSafePosition;
     }
+    else
+    {
+        transform.position = lastSafePosition;
+    }
+
+    wasGrounded = false;
+
+    Debug.Log("PLAYER TELEPORTED SUCCESSFULLY!");
+}
 
     // =========================================================
     // RESET SAFE POSITION
