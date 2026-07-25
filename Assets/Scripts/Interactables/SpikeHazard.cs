@@ -33,6 +33,8 @@ public class SpikeHazard : MonoBehaviour
         if (!other.CompareTag("Player") || cooldownTimer > 0f)
             return;
 
+        TimeFreeze.Instance.Freeze(0.05f);
+
         cooldownTimer = triggerCooldown;
 
         levelManager?.RemoveTime(timePenalty);

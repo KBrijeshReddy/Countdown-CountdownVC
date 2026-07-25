@@ -17,8 +17,19 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GamePhase currentPhase = GamePhase.Buying;
 
     [Header("Timer")]
+    [Tooltip("Starting time used only if no time was carried over from a previous level (i.e. Level 1).")]
     [SerializeField] private float startingTime = 200f;
     [SerializeField] private TMP_Text timerText;
+
+    [Header("Time Carry-Over Reward")]
+    [Tooltip("Total time (buying + puzzle) a player is 'expected' to spend on this level.")]
+    [SerializeField] private float idealCompletionTime = 30f;
+    [Tooltip("Bonus time awarded when the level is finished in exactly the ideal time.")]
+    [SerializeField] private float baseBonusTime = 12f;
+    [Tooltip("Bonus time can never drop below this, no matter how long the player took.")]
+    [SerializeField] private float minimumBonusTime = 6f;
+    [Tooltip("How much bonus time is lost per second spent beyond the ideal time (and gained per second under it).")]
+    [SerializeField] private float bonusChangePerSecond = 0.5f;
 
     [Header("Start Button")]
     [SerializeField] private Button startButton;
@@ -31,6 +42,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GridManager gridManager;
 
     private float remainingTime;
+    private float levelStartingTime;
     private Coroutine timerRoutine;
 
     public static LevelManager Instance { get; private set; }
@@ -53,7 +65,15 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         currentPhase = GamePhase.Buying;
-        remainingTime = startingTime;
+
+        remainingTime = GameSession.Instance != null && GameSession.Instance.HasCarriedTime
+            ? GameSession.Instance.CarriedTime
+            : startingTime;
+
+        // Snapshot the exact amount this attempt began with. This is the
+        // single source of truth for both "how much did the player spend"
+        // (on success) and "how much to restore" (on timeout).
+        levelStartingTime = remainingTime;
 
         UpdateTimerUI();
 
@@ -87,6 +107,32 @@ public class LevelManager : MonoBehaviour
         timerRoutine = StartCoroutine(RunTimer());
     }
 
+    /// Called by EndDoor when the player reaches it with the key.
+    /// Computes the time-based bonus, hands the resulting total off to
+    /// GameSession, and loads the next level.
+    public void CompleteLevel(string nextSceneName = null)
+    {
+        if (timerRoutine != null)
+            StopCoroutine(timerRoutine);
+
+        float timeSpent = levelStartingTime - remainingTime;
+        float bonus = CalculateBonusTime(timeSpent);
+        float carryOverTime = remainingTime + bonus;
+
+        EnsureGameSession();
+        GameSession.Instance.SetCarriedTime(carryOverTime);
+
+        LoadScene(nextSceneName);
+    }
+
+    private float CalculateBonusTime(float timeSpent)
+    {
+        float differenceFromIdeal = timeSpent - idealCompletionTime;
+        float bonus = baseBonusTime - differenceFromIdeal * bonusChangePerSecond;
+
+        return Mathf.Max(minimumBonusTime, bonus);
+    }
+
     private IEnumerator RunTimer()
     {
         while (remainingTime > 0f)
@@ -101,7 +147,7 @@ public class LevelManager : MonoBehaviour
             UpdateTimerUI();
         }
 
-        RestartLevel();
+        RespawnSameLevel();
     }
 
     public bool IsBuyingPhase()
@@ -178,10 +224,38 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void RestartLevel()
+    /// Time ran out — reload this same level with the amount of time
+    /// it originally started with, as if the attempt never happened.
+    private void RespawnSameLevel()
     {
-        SceneManager.LoadScene(
-            SceneManager.GetActiveScene().buildIndex
-        );
+        EnsureGameSession();
+        GameSession.Instance.SetCarriedTime(levelStartingTime);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void LoadScene(string sceneName)
+    {
+        if (!string.IsNullOrEmpty(sceneName))
+        {
+            SceneManager.LoadScene(sceneName);
+            return;
+        }
+
+        int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+        if (nextIndex < SceneManager.sceneCountInBuildSettings)
+            SceneManager.LoadScene(nextIndex);
+        else
+            Debug.LogWarning($"{name}: No next scene in Build Settings to load.");
+    }
+
+    private void EnsureGameSession()
+    {
+        if (GameSession.Instance != null)
+            return;
+
+        var sessionObject = new GameObject("GameSession");
+        sessionObject.AddComponent<GameSession>();
     }
 }

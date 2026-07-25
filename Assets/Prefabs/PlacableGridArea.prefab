@@ -96,6 +96,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridVisual
   gridManager: {fileID: 6518102082071136937}
-  gridColor: {r: 1, g: 1, b: 1, a: 0.101960786}
+  gridColor: {r: 1, g: 1, b: 1, a: 0.007843138}
   lineWidth: 0.028
   lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}

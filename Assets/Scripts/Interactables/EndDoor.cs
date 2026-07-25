@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class EndDoor : MonoBehaviour
 {
@@ -31,28 +30,16 @@ public class EndDoor : MonoBehaviour
         }
 
         SetVisual(true);
-        LoadNextScene();
+
+        if (LevelManager.Instance != null)
+            LevelManager.Instance.CompleteLevel(nextSceneName);
+        else
+            Debug.LogError($"{name}: LevelManager.Instance is missing, cannot complete level.");
     }
 
     private void SetVisual(bool unlocked)
     {
         if (visual != null)
             visual.color = unlocked ? unlockedColor : lockedColor;
-    }
-
-    private void LoadNextScene()
-    {
-        if (!string.IsNullOrEmpty(nextSceneName))
-        {
-            SceneManager.LoadScene(nextSceneName);
-            return;
-        }
-
-        int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
-
-        if (nextIndex < SceneManager.sceneCountInBuildSettings)
-            SceneManager.LoadScene(nextIndex);
-        else
-            Debug.LogWarning($"{name}: No next scene in Build Settings to load.");
     }
 }
