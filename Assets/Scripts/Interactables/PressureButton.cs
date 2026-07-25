@@ -13,10 +13,16 @@ public class PressureButton : MonoBehaviour
     [SerializeField] private Color pressedColor = Color.green;
 
     private LevelManager levelManager;
+    private Collider2D[] ownColliders;
+
     private bool isPressed;
     private float activationTimer;
 
-    private void Awake() => SetPressed(false);
+    private void Awake()
+    {
+        ownColliders = GetComponentsInChildren<Collider2D>();
+        SetPressed(false);
+    }
 
     private void OnEnable()
     {
@@ -66,11 +72,17 @@ public class PressureButton : MonoBehaviour
         }
     }
 
-    private void OnPlayerEntered(Collider2D player)
+    private void OnPlayerEntered(Collider2D player) => Activate();
+
+    /// Presses the button. Public so anything that can "step on" a
+    /// button — the player, or a laser beam — can trigger it the same
+    /// way. Refreshes the active duration if already pressed.
+    public void Activate()
     {
-        if (isPressed) return;
         activationTimer = activeDuration;
-        SetPressed(true);
+
+        if (!isPressed)
+            SetPressed(true);
     }
 
     private void SetPressed(bool pressed)
@@ -92,5 +104,15 @@ public class PressureButton : MonoBehaviour
         }
 
         connectedDoor?.SetOpen(pressed);
+        SetCollidersEnabled(!pressed);
+    }
+
+    private void SetCollidersEnabled(bool enabled)
+    {
+        foreach (Collider2D collider in ownColliders)
+        {
+            if (collider != null)
+                collider.enabled = enabled;
+        }
     }
 }
