@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 2936394367530497074}
   - component: {fileID: 7215802123876260589}
   - component: {fileID: 5950950883927901512}
+  - component: {fileID: 4309096446159713307}
   m_Layer: 3
   m_Name: Button
   m_TagString: Untagged
@@ -129,9 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb71f05d96604f4a8bccc9843c29456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
-  gridManager: {fileID: 0}
   footprint: {fileID: 6729649230213371989}
-  buyArea: {fileID: 0}
   dragCollider: {fileID: 3410242643093225807}
   pickupScale: 1.08
   visual: {fileID: 985150033826618083}
@@ -167,7 +166,6 @@ MonoBehaviour:
   activeDuration: 3
   connectedDoor: {fileID: 0}
   triggerZone: {fileID: 6934855970506739128}
-  visual: {fileID: 985150033826618083}
   animatorVisual: {fileID: 281643744947205279}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 0.8954295, g: 1, b: 0, a: 1}
@@ -183,7 +181,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b93f12cc6f47243956cced6aab2f87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlacementRule
-  ruleType: 1
+  ruleType: 2
+  supportLayer:
+    serializedVersion: 2
+    m_Bits: 136
+  raycastMargin: 0.05
 --- !u!114 &5950950883927901512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +199,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableObject
   cost: 10
+--- !u!114 &4309096446159713307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7623277063154719672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 342c05cd0cc28d546b88878a166c6f7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SurfaceMountRotator
 --- !u!1 &8881252917884406878
 GameObject:
   m_ObjectHideFlags: 0

@@ -128,9 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb71f05d96604f4a8bccc9843c29456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
-  gridManager: {fileID: 0}
   footprint: {fileID: 5789833220484037842}
-  buyArea: {fileID: 0}
   dragCollider: {fileID: 2794330452787635268}
   pickupScale: 1.08
   visual: {fileID: 4133853477619300035}
@@ -179,7 +177,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b93f12cc6f47243956cced6aab2f87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlacementRule
-  ruleType: 2
+  ruleType: 1
+  supportLayer:
+    serializedVersion: 2
+    m_Bits: 136
+  raycastMargin: 0.05
 --- !u!114 &4590505717047703895
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -17,6 +17,8 @@ public class PlaceableDragHandler : MonoBehaviour
     [SerializeField] private Color invalidColor = new Color(1f, 0.5f, 0.5f);
 
     private Purchasable purchasable;
+    private PlacementRule placementRule;
+    private SurfaceMountRotator surfaceMountRotator;
     private Camera mainCamera;
 
     private Vector3 originalScale;
@@ -39,6 +41,8 @@ public class PlaceableDragHandler : MonoBehaviour
     private void Awake()
     {
         purchasable = GetComponent<Purchasable>();
+        placementRule = GetComponent<PlacementRule>();
+        surfaceMountRotator = GetComponent<SurfaceMountRotator>();
         mainCamera = Camera.main;
         originalScale = transform.localScale;
         buyAreaPosition = transform.position;
@@ -138,6 +142,7 @@ public class PlaceableDragHandler : MonoBehaviour
         previewValid = GridManager.Instance.CanPlaceObject(previewGridPosition, footprint);
 
         SetVisualColor(previewValid ? validColor : invalidColor);
+        ApplySurfaceRotation();
     }
 
     private void FinishDrag()
@@ -176,6 +181,7 @@ public class PlaceableDragHandler : MonoBehaviour
 
         GridManager.Instance.PlaceObject(gridPosition, footprint);
         SetVisualColor(normalColor);
+        ApplySurfaceRotation();
     }
 
     private void ReturnToBuyArea()
@@ -188,6 +194,7 @@ public class PlaceableDragHandler : MonoBehaviour
         transform.position = buyAreaPosition;
 
         SetVisualColor(normalColor);
+        surfaceMountRotator?.ApplyRotation(SurfaceSupport.Side.Floor);
     }
 
     private void ReturnToPreviousPosition()
@@ -199,9 +206,27 @@ public class PlaceableDragHandler : MonoBehaviour
         {
             gridPosition = dragStartGridPosition;
             GridManager.Instance.PlaceObject(gridPosition, footprint);
+
+            if (placementRule != null)
+                placementRule.IsPlacementValid(gridPosition, GridManager.Instance);
+
+            ApplySurfaceRotation();
         }
 
         SetVisualColor(normalColor);
+    }
+
+    private void ApplySurfaceRotation()
+    {
+        if (placementRule == null) return;
+
+        if (surfaceMountRotator == null)
+        {
+            Debug.LogWarning($"{name}: has a PlacementRule but no SurfaceMountRotator component — visual won't rotate to match its surface.");
+            return;
+        }
+
+        surfaceMountRotator.ApplyRotation(placementRule.LastDetectedSide);
     }
 
     private Vector3 ScreenToWorld(Vector2 screenPosition)
