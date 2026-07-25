@@ -15,16 +15,15 @@ public class RestartLevelButton : MonoBehaviour
     }
 
     private void OnEnable() => SubscribeToLevelManager();
-    private void Start(){
-        button.gameObject.SetActive(false);
-        SubscribeToLevelManager();
-    }
-    // brijesh anna sexy
+    private void Start() => SubscribeToLevelManager();
 
     private void OnDisable()
     {
         if (levelManager != null)
+        {
             levelManager.PuzzlePhaseStarted -= EnableButton;
+            levelManager.LevelRestarted -= DisableButton;
+        }
     }
 
     private void SubscribeToLevelManager()
@@ -37,12 +36,13 @@ public class RestartLevelButton : MonoBehaviour
 
         levelManager.PuzzlePhaseStarted -= EnableButton;
         levelManager.PuzzlePhaseStarted += EnableButton;
+
+        levelManager.LevelRestarted -= DisableButton;
+        levelManager.LevelRestarted += DisableButton;
     }
 
-    private void EnableButton(){
-        button.gameObject.SetActive(true);
-        button.interactable = true;
-    }        
+    private void EnableButton() => button.interactable = true;
+    private void DisableButton() => button.interactable = false;
 
     private void HandleClick() => levelManager?.RestartLevel();
 }

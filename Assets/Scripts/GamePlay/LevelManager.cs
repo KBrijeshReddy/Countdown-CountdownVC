@@ -48,10 +48,11 @@ public class LevelManager : MonoBehaviour
 
     public event Action PuzzlePhaseStarted;
 
-    /// Raised when the player uses the restart button mid-puzzle. Doors,
-    /// buttons, and the player position all reset in response to this;
-    /// placed platforms are intentionally left untouched.
-    public event Action LevelRestarted;
+    /// Raised when the player uses the restart button. Sends the level
+/// back to the end of Buy Phase — doors, buttons, breakables, and the
+/// key all reset, and the player respawns — but placed objects are
+/// left untouched so the player can rework their layout.
+public event Action LevelRestarted;
 
     private void Awake()
     {
@@ -110,19 +111,35 @@ public class LevelManager : MonoBehaviour
         timerRoutine = StartCoroutine(RunTimer());
     }
 
-    /// Soft reset: restores the timer to what it was when the puzzle
-    /// began, and notifies doors/buttons/player to reset themselves.
-    /// Placed platforms are not affected.
-    public void RestartLevel()
+    /// Sends the player back to the end of Buy Phase: timer restores to
+/// what it was right after buying finished, the player respawns, and
+/// doors/buttons/breakables/key all reset via LevelRestarted. Already
+/// placed objects are left exactly where they are — GridManager is
+/// never touched — so the player can freely rearrange, sell, or add
+/// to their existing placements before starting the puzzle again.
+public void RestartLevel()
+{
+    if (!IsPuzzlePhase())
+        return;
+
+    if (timerRoutine != null)
     {
-        if (!IsPuzzlePhase())
-            return;
-
-        remainingTime = puzzlePhaseStartingTime;
-        UpdateTimerUI();
-
-        LevelRestarted?.Invoke();
+        StopCoroutine(timerRoutine);
+        timerRoutine = null;
     }
+
+    currentPhase = GamePhase.Buying;
+    remainingTime = puzzlePhaseStartingTime;
+    UpdateTimerUI();
+
+    SetPlayerCollider(false);
+    SetGridVisual(true);
+
+    if (startButton != null)
+        startButton.interactable = true;
+
+    LevelRestarted?.Invoke();
+}
 
     public void CompleteLevel(string nextSceneName = null)
     {
