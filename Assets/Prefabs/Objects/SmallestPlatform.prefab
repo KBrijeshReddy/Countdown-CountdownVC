@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c61d4b0d4ce5174896f420a4ede690c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlaceableObjectTimer
-  lifetime: 3
+  lifetime: 2
   timerEnabled: 1
   timerText: {fileID: 6874350642927094741}
   animatorVisual: {fileID: 884873539274013709}
