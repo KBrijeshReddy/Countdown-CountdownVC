@@ -8,6 +8,30 @@ public class PlayerInventory : MonoBehaviour
     public bool HasKey { get; private set; }
 
     public event Action KeyCollected;
+    public event Action InventoryReset;
+
+    private LevelManager levelManager;
+
+    private void OnEnable() => SubscribeToLevelManager();
+    private void Start() => SubscribeToLevelManager();
+
+    private void OnDisable()
+    {
+        if (levelManager != null)
+            levelManager.LevelRestarted -= ResetInventory;
+    }
+
+    private void SubscribeToLevelManager()
+    {
+        if (levelManager == null)
+            levelManager = LevelManager.Instance;
+
+        if (levelManager == null)
+            return;
+
+        levelManager.LevelRestarted -= ResetInventory;
+        levelManager.LevelRestarted += ResetInventory;
+    }
 
     public void CollectKey()
     {
@@ -16,5 +40,14 @@ public class PlayerInventory : MonoBehaviour
 
         HasKey = true;
         KeyCollected?.Invoke();
+    }
+
+    private void ResetInventory()
+    {
+        if (!HasKey)
+            return;
+
+        HasKey = false;
+        InventoryReset?.Invoke();
     }
 }

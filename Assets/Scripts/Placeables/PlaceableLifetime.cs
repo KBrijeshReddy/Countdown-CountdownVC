@@ -12,11 +12,12 @@ public class PlaceableLifetime : MonoBehaviour
 
     [Header("Visual")]
     [SerializeField] private Animator animatorVisual;
-    [SerializeField] private GameObject destructionParticlesPrefab; 
+    [SerializeField] private GameObject destructionParticlesPrefab;
     [SerializeField] private Color startColor = Color.blue;
     [SerializeField] private Color endColor = Color.red;
 
     private PlaceableDragHandler dragHandler;
+    private LevelManager levelManager;
 
     public float RemainingTime { get; private set; }
     public bool TimerStarted { get; private set; }
@@ -30,6 +31,30 @@ public class PlaceableLifetime : MonoBehaviour
         UpdateTimerText();
     }
 
+    private void OnEnable() => SubscribeToLevelManager();
+    private void Start() => SubscribeToLevelManager();
+
+    private void OnDestroy()
+    {
+        if (levelManager != null)
+            levelManager.LevelRestarted -= ResetTimer;
+    }
+
+    private void SubscribeToLevelManager()
+    {
+        if (levelManager == null)
+            levelManager = LevelManager.Instance;
+
+        if (levelManager == null)
+            return;
+
+        // Subscribed once and kept alive across break/restart — this object
+        // is deactivated rather than destroyed when its timer runs out, so
+        // it must still be able to hear the restart event while inactive.
+        levelManager.LevelRestarted -= ResetTimer;
+        levelManager.LevelRestarted += ResetTimer;
+    }
+
     private void Update()
     {
         if (!timerEnabled || !TimerStarted || IsUsed) return;
@@ -39,12 +64,8 @@ public class PlaceableLifetime : MonoBehaviour
         UpdateVisual();
         UpdateTimerText();
 
-        if (RemainingTime <= 0f){
-            animatorVisual.SetBool("TileBreaking", false);
-            Instantiate(destructionParticlesPrefab, transform.position, Quaternion.identity);
-            Destroy(gameObject);
-            // Destroy(destructionParticlesPrefab);
-        }    
+        if (RemainingTime <= 0f)
+            BreakObject();
     }
 
     public void StartTimer()
@@ -54,26 +75,55 @@ public class PlaceableLifetime : MonoBehaviour
 
         TimerStarted = true;
         RemainingTime = lifetime;
-        animatorVisual.SetBool("TileBreaking", true);
+
+        if (animatorVisual != null)
+            animatorVisual.SetBool("TileBreaking", true);
+
         UpdateVisual();
         UpdateTimerText();
     }
 
     public void StopTimer() => TimerStarted = false;
 
-    public void ResetTimer()
-    {
-        TimerStarted = false;
-        IsUsed = false;
-        RemainingTime = lifetime;
-        UpdateVisual();
-        UpdateTimerText();
-    }
-
     public void MarkAsUsed()
     {
         IsUsed = true;
         TimerStarted = false;
+        UpdateTimerText();
+    }
+
+    /// Visually and physically "destroys" the object without actually
+    /// destroying it, so a level restart can bring it back exactly as
+    /// it started.
+    private void BreakObject()
+    {
+        if (animatorVisual != null)
+            animatorVisual.SetBool("TileBreaking", false);
+
+        if (destructionParticlesPrefab != null)
+            Instantiate(destructionParticlesPrefab, transform.position, Quaternion.identity);
+
+        gameObject.SetActive(false);
+    }
+
+    /// Called on LevelManager.LevelRestarted. Reactivates the object if
+    /// it had broken, and resets its timer back to a fresh, un-started
+    /// state either way.
+    private void ResetTimer()
+    {
+        gameObject.SetActive(true);
+
+        TimerStarted = false;
+        IsUsed = false;
+        RemainingTime = lifetime;
+
+        if (animatorVisual != null)
+        {
+            animatorVisual.SetBool("TileBreaking", false);
+            animatorVisual.SetBool("TileBreaking", false);
+        }
+
+        UpdateVisual();
         UpdateTimerText();
     }
 

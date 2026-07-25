@@ -12,6 +12,8 @@ public class PlaceableDragHandler : MonoBehaviour
 
     [Header("Visual")]
     [SerializeField] private SpriteRenderer visual;
+    [SerializeField] private SpriteRenderer visualTwo;
+    [SerializeField] private SpriteRenderer visualThree;
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color validColor = new Color(0.5f, 1f, 0.5f);
     [SerializeField] private Color invalidColor = new Color(1f, 0.5f, 0.5f);
@@ -238,5 +240,7 @@ public class PlaceableDragHandler : MonoBehaviour
     private void SetVisualColor(Color color)
     {
         if (visual != null) visual.color = color;
+        if (visualTwo != null) visualTwo.color = color;
+        if (visualThree != null) visualThree.color = color;
     }
 }
