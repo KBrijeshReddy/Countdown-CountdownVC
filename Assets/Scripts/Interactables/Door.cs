@@ -10,7 +10,32 @@ public class Door : MonoBehaviour
     [Header("Collider")]
     [SerializeField] private Collider2D doorCollider;
 
+    private LevelManager levelManager;
+
     private void Awake() => SetOpen(false);
+
+    private void OnEnable() => SubscribeToLevelManager();
+    private void Start() => SubscribeToLevelManager();
+
+    private void OnDisable()
+    {
+        if (levelManager != null)
+            levelManager.LevelRestarted -= ResetDoor;
+    }
+
+    private void SubscribeToLevelManager()
+    {
+        if (levelManager == null)
+            levelManager = LevelManager.Instance;
+
+        if (levelManager == null)
+            return;
+
+        levelManager.LevelRestarted -= ResetDoor;
+        levelManager.LevelRestarted += ResetDoor;
+    }
+
+    private void ResetDoor() => SetOpen(false);
 
     public void SetOpen(bool open)
     {

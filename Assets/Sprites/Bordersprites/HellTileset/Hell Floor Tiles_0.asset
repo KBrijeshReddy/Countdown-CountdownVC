@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: Hell Platform Buy Wall_3
+  m_Name: Hell Floor Tiles_0
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
-  m_Sprite: {fileID: 870373190, guid: 4ff27a86f9cea5b45afe77ddff86ad1d, type: 3}
+  m_Sprite: {fileID: -1923776535261324899, guid: 86c1bfed89a181745a8b380906817472, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

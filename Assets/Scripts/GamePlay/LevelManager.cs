@@ -22,13 +22,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private TMP_Text timerText;
 
     [Header("Time Carry-Over Reward")]
-    [Tooltip("Total time (buying + puzzle) a player is 'expected' to spend on this level.")]
     [SerializeField] private float idealCompletionTime = 30f;
-    [Tooltip("Bonus time awarded when the level is finished in exactly the ideal time.")]
     [SerializeField] private float baseBonusTime = 12f;
-    [Tooltip("Bonus time can never drop below this, no matter how long the player took.")]
     [SerializeField] private float minimumBonusTime = 6f;
-    [Tooltip("How much bonus time is lost per second spent beyond the ideal time (and gained per second under it).")]
     [SerializeField] private float bonusChangePerSecond = 0.5f;
 
     [Header("Start Button")]
@@ -43,6 +39,7 @@ public class LevelManager : MonoBehaviour
 
     private float remainingTime;
     private float levelStartingTime;
+    private float puzzlePhaseStartingTime;
     private Coroutine timerRoutine;
 
     public static LevelManager Instance { get; private set; }
@@ -50,6 +47,11 @@ public class LevelManager : MonoBehaviour
     public float RemainingTime => remainingTime;
 
     public event Action PuzzlePhaseStarted;
+
+    /// Raised when the player uses the restart button mid-puzzle. Doors,
+    /// buttons, and the player position all reset in response to this;
+    /// placed platforms are intentionally left untouched.
+    public event Action LevelRestarted;
 
     private void Awake()
     {
@@ -70,9 +72,6 @@ public class LevelManager : MonoBehaviour
             ? GameSession.Instance.CarriedTime
             : startingTime;
 
-        // Snapshot the exact amount this attempt began with. This is the
-        // single source of truth for both "how much did the player spend"
-        // (on success) and "how much to restore" (on timeout).
         levelStartingTime = remainingTime;
 
         UpdateTimerUI();
@@ -92,6 +91,10 @@ public class LevelManager : MonoBehaviour
 
         currentPhase = GamePhase.Puzzle;
 
+        // Snapshot exactly how much time exists the moment the puzzle
+        // begins — this is what a restart returns the player to.
+        puzzlePhaseStartingTime = remainingTime;
+
         SetPlayerMovement(true);
         SetPlayerCollider(true);
         SetGridVisual(false);
@@ -107,9 +110,20 @@ public class LevelManager : MonoBehaviour
         timerRoutine = StartCoroutine(RunTimer());
     }
 
-    /// Called by EndDoor when the player reaches it with the key.
-    /// Computes the time-based bonus, hands the resulting total off to
-    /// GameSession, and loads the next level.
+    /// Soft reset: restores the timer to what it was when the puzzle
+    /// began, and notifies doors/buttons/player to reset themselves.
+    /// Placed platforms are not affected.
+    public void RestartLevel()
+    {
+        if (!IsPuzzlePhase())
+            return;
+
+        remainingTime = puzzlePhaseStartingTime;
+        UpdateTimerUI();
+
+        LevelRestarted?.Invoke();
+    }
+
     public void CompleteLevel(string nextSceneName = null)
     {
         if (timerRoutine != null)
@@ -224,8 +238,6 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    /// Time ran out — reload this same level with the amount of time
-    /// it originally started with, as if the attempt never happened.
     private void RespawnSameLevel()
     {
         EnsureGameSession();

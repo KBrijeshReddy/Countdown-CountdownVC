@@ -12,6 +12,7 @@ public class PressureButton : MonoBehaviour
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color pressedColor = Color.green;
 
+    private LevelManager levelManager;
     private bool isPressed;
     private float activationTimer;
 
@@ -20,11 +21,35 @@ public class PressureButton : MonoBehaviour
     private void OnEnable()
     {
         if (triggerZone != null) triggerZone.PlayerEntered += OnPlayerEntered;
+        SubscribeToLevelManager();
     }
+
+    private void Start() => SubscribeToLevelManager();
 
     private void OnDisable()
     {
         if (triggerZone != null) triggerZone.PlayerEntered -= OnPlayerEntered;
+
+        if (levelManager != null)
+            levelManager.LevelRestarted -= ResetButton;
+    }
+
+    private void SubscribeToLevelManager()
+    {
+        if (levelManager == null)
+            levelManager = LevelManager.Instance;
+
+        if (levelManager == null)
+            return;
+
+        levelManager.LevelRestarted -= ResetButton;
+        levelManager.LevelRestarted += ResetButton;
+    }
+
+    private void ResetButton()
+    {
+        activationTimer = 0f;
+        SetPressed(false);
     }
 
     private void Update()
@@ -32,12 +57,13 @@ public class PressureButton : MonoBehaviour
         if (!isPressed) return;
 
         activationTimer -= Time.deltaTime;
-        if (activationTimer <= 0f){
+        if (activationTimer <= 0f)
+        {
             animatorVisual.SetBool("ButtonPressed", false);
             animatorVisual.SetBool("ButtonStarted", true);
             SetPressed(false);
             animatorVisual.SetBool("ButtonStarted", false);
-        }    
+        }
     }
 
     private void OnPlayerEntered(Collider2D player)
@@ -51,14 +77,17 @@ public class PressureButton : MonoBehaviour
     {
         isPressed = pressed;
 
-        if (animatorVisual != null){
-            if(pressed){
+        if (animatorVisual != null)
+        {
+            if (pressed)
+            {
                 animatorVisual.SetBool("ButtonPressed", true);
                 animatorVisual.SetBool("ButtonStarted", true);
             }
 
-            if(!pressed){
-                 animatorVisual.SetBool("ButtonPressed", false);
+            if (!pressed)
+            {
+                animatorVisual.SetBool("ButtonPressed", false);
             }
         }
 
