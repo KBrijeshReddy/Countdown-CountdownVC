@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5752736950962833121}
   - component: {fileID: 6711907079605539074}
   - component: {fileID: 2052513898992624548}
-  - component: {fileID: 4615359049614200024}
+  - component: {fileID: -5902891331801426208}
   m_Layer: 0
-  m_Name: Spike
+  m_Name: SpikeOne
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -5159362228428509745, guid: a555797f5fafd7f41844fba335cd6f2f, type: 3}
+  m_Sprite: {fileID: 8382717070696663976, guid: 05444f6d13703f4429ca866f2d1278d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -109,8 +109,8 @@ MonoBehaviour:
   timePenalty: 5
   teleportPlayer: 1
   triggerCooldown: 0.5
---- !u!60 &4615359049614200024
-PolygonCollider2D:
+--- !u!61 &-5902891331801426208
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -153,14 +153,5 @@ PolygonCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.043060303, y: 0.5026674}
-      - {x: -0.22522402, y: 0.2907753}
-      - {x: -0.37475872, y: -0.24302197}
-      - {x: -0.5, y: -0.5}
-      - {x: 0.5, y: -0.5}
-      - {x: 0.38791752, y: -0.22875118}
-      - {x: 0.21988869, y: 0.2793436}
-      - {x: 0.041534424, y: 0.5026674}
-  m_UseDelaunayMesh: 1
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
