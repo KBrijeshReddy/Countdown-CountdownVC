@@ -1,25 +1,10 @@
 fileFormatVersion: 2
-guid: 8d77d987b52816e4f8ff26d713bda2e5
+guid: 76f59f434b87a04408376bd90f2f2ba8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 755679051696225717
-    second: mcidleanimation_0
-  - first:
-      213: -7269265201790763178
-    second: mcidleanimation_1
-  - first:
-      213: -8677335796394375397
-    second: mcidleanimation_2
-  - first:
-      213: -8337967018959530238
-    second: mcidleanimation_3
-  - first:
-      213: -6720939378229610907
-    second: mcidleanimation_4
-  - first:
-      213: -2766453607373499845
-    second: mcidleanimation_5
+      213: -5121625828458581981
+    second: spikesbetter_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mcidleanimation_0
+      name: spikesbetter_0
       rect:
         serializedVersion: 2
-        x: 55
+        x: 2
         y: 0
-        width: 46
-        height: 160
+        width: 60
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,118 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5bdbe800816bc7a00800000000000000
-      internalID: 755679051696225717
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: mcidleanimation_1
-      rect:
-        serializedVersion: 2
-        x: 215
-        y: 0
-        width: 46
-        height: 159
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 65f372d20d16e1b90800000000000000
-      internalID: -7269265201790763178
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: mcidleanimation_2
-      rect:
-        serializedVersion: 2
-        x: 375
-        y: 0
-        width: 46
-        height: 160
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b17c1235119e39780800000000000000
-      internalID: -8677335796394375397
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: mcidleanimation_3
-      rect:
-        serializedVersion: 2
-        x: 535
-        y: 0
-        width: 46
-        height: 159
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2079ef53c27994c80800000000000000
-      internalID: -8337967018959530238
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: mcidleanimation_4
-      rect:
-        serializedVersion: 2
-        x: 695
-        y: 0
-        width: 46
-        height: 160
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 56670bb9e3d6ab2a0800000000000000
-      internalID: -6720939378229610907
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: mcidleanimation_5
-      rect:
-        serializedVersion: 2
-        x: 855
-        y: 0
-        width: 46
-        height: 159
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b3297e4f9159b99d0800000000000000
-      internalID: -2766453607373499845
+      spriteID: 320b24ec1745ce8b0800000000000000
+      internalID: -5121625828458581981
       vertices: []
       indices: 
       edges: []
@@ -286,12 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      mcidleanimation_0: 755679051696225717
-      mcidleanimation_1: -7269265201790763178
-      mcidleanimation_2: -8677335796394375397
-      mcidleanimation_3: -8337967018959530238
-      mcidleanimation_4: -6720939378229610907
-      mcidleanimation_5: -2766453607373499845
+      spikesbetter_0: -5121625828458581981
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

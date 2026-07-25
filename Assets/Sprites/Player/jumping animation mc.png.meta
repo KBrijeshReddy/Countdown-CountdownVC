@@ -1,31 +1,31 @@
 fileFormatVersion: 2
-guid: 73840c4a1b0a56944a8cdbfb0dbe0cff
+guid: 491f798ef1c19624782d53f92331a769
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8375392925531386051
-    second: mcjumpanimation_0
+      213: -8037553081940107215
+    second: jumping animation mc_0
   - first:
-      213: -26392598992899744
-    second: mcjumpanimation_1
+      213: -5609793197048120324
+    second: jumping animation mc_1
   - first:
-      213: 3097981583178498932
-    second: mcjumpanimation_2
+      213: 2533213077564679328
+    second: jumping animation mc_2
   - first:
-      213: 1795119383244435037
-    second: mcjumpanimation_3
+      213: -8646880004032911987
+    second: jumping animation mc_3
   - first:
-      213: -7851356367460072996
-    second: mcjumpanimation_4
+      213: -6118632227091164074
+    second: jumping animation mc_4
   - first:
-      213: 7624369860500765837
-    second: mcjumpanimation_5
+      213: -4339767499966722460
+    second: jumping animation mc_5
   - first:
-      213: -2860931136225799944
-    second: mcjumpanimation_6
+      213: -61385733304273863
+    second: jumping animation mc_6
   - first:
-      213: -1676711630846944928
-    second: mcjumpanimation_7
+      213: -5801634147957390233
+    second: jumping animation mc_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -147,177 +147,177 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mcjumpanimation_0
+      name: jumping animation mc_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 53
         y: 0
-        width: 64
-        height: 64
+        width: 46
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d3fc16b4280a4cb80800000000000000
-      internalID: -8375392925531386051
+      spriteID: 1302d978e00e47090800000000000000
+      internalID: -8037553081940107215
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mcjumpanimation_1
+      name: jumping animation mc_1
       rect:
         serializedVersion: 2
-        x: 64
+        x: 194
         y: 0
-        width: 64
-        height: 64
+        width: 82
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0613450321c32aff0800000000000000
-      internalID: -26392598992899744
+      spriteID: cfb3b8a2fc20622b0800000000000000
+      internalID: -5609793197048120324
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mcjumpanimation_2
+      name: jumping animation mc_2
       rect:
         serializedVersion: 2
-        x: 128
+        x: 354
         y: 0
-        width: 64
-        height: 64
+        width: 91
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4738e0a06dd3efa20800000000000000
-      internalID: 3097981583178498932
+      spriteID: 0a4ed9c5fd7c72320800000000000000
+      internalID: 2533213077564679328
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mcjumpanimation_3
+      name: jumping animation mc_3
       rect:
         serializedVersion: 2
-        x: 192
+        x: 503
         y: 0
-        width: 64
-        height: 64
+        width: 118
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d5ee3bf619b89e810800000000000000
-      internalID: 1795119383244435037
+      spriteID: d85a030137c100880800000000000000
+      internalID: -8646880004032911987
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mcjumpanimation_4
+      name: jumping animation mc_4
       rect:
         serializedVersion: 2
-        x: 256
+        x: 653
         y: 0
-        width: 64
-        height: 64
+        width: 129
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cd18a886bf06a0390800000000000000
-      internalID: -7851356367460072996
+      spriteID: 65459f84860461ba0800000000000000
+      internalID: -6118632227091164074
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mcjumpanimation_5
+      name: jumping animation mc_5
       rect:
         serializedVersion: 2
-        x: 320
+        x: 823
         y: 0
-        width: 64
-        height: 64
+        width: 118
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d8cb7531ef33fc960800000000000000
-      internalID: 7624369860500765837
+      spriteID: 46ec2bca37c06c3c0800000000000000
+      internalID: -4339767499966722460
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mcjumpanimation_6
+      name: jumping animation mc_6
       rect:
         serializedVersion: 2
-        x: 384
+        x: 994
         y: 0
-        width: 64
-        height: 64
+        width: 91
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8f0186a1a4eeb48d0800000000000000
-      internalID: -2860931136225799944
+      spriteID: 9343f14300ae52ff0800000000000000
+      internalID: -61385733304273863
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mcjumpanimation_7
+      name: jumping animation mc_7
       rect:
         serializedVersion: 2
-        x: 448
+        x: 1154
         y: 0
-        width: 64
-        height: 64
+        width: 82
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0691a94c7af1bb8e0800000000000000
-      internalID: -1676711630846944928
+      spriteID: 76449361b747c7fa0800000000000000
+      internalID: -5801634147957390233
       vertices: []
       indices: 
       edges: []
@@ -326,7 +326,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 258b5957752227346adcce2cdfe4f498
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -334,18 +334,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      mcjumpanimation_0: -8375392925531386051
-      mcjumpanimation_1: -26392598992899744
-      mcjumpanimation_2: 3097981583178498932
-      mcjumpanimation_3: 1795119383244435037
-      mcjumpanimation_4: -7851356367460072996
-      mcjumpanimation_5: 7624369860500765837
-      mcjumpanimation_6: -2860931136225799944
-      mcjumpanimation_7: -1676711630846944928
+      jumping animation mc_0: -8037553081940107215
+      jumping animation mc_1: -5609793197048120324
+      jumping animation mc_2: 2533213077564679328
+      jumping animation mc_3: -8646880004032911987
+      jumping animation mc_4: -6118632227091164074
+      jumping animation mc_5: -4339767499966722460
+      jumping animation mc_6: -61385733304273863
+      jumping animation mc_7: -5801634147957390233
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
