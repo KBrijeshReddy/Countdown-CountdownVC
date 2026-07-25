@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4906525651252084948}
   - component: {fileID: 7005173861030927323}
   - component: {fileID: 884873539274013709}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: ObjectVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9124971710621318670}
   - component: {fileID: 1967439437879550341}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: DragCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,7 +205,7 @@ GameObject:
   - component: {fileID: 3117318568187622790}
   - component: {fileID: 525582540993194420}
   - component: {fileID: 7849796405736406368}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: ObjectCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 6674274377001348691}
   - component: {fileID: 5087761869999652211}
   - component: {fileID: 5904013015571378774}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: SmallPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -348,9 +348,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb71f05d96604f4a8bccc9843c29456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
-  gridManager: {fileID: 0}
   footprint: {fileID: 4196311322713984138}
-  buyArea: {fileID: 0}
   dragCollider: {fileID: 1967439437879550341}
   pickupScale: 1.08
   visual: {fileID: 7005173861030927323}
@@ -428,7 +426,7 @@ GameObject:
   - component: {fileID: 1648673385420170085}
   - component: {fileID: 6667368547997437630}
   - component: {fileID: 2098617915237029394}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: PlayerDetection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -519,7 +517,7 @@ GameObject:
   - component: {fileID: 1052436223437474021}
   - component: {fileID: 6833838179836121914}
   - component: {fileID: 6874350642927094741}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: ObjectTimer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

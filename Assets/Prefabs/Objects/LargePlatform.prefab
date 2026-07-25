@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 115389502381981644}
   - component: {fileID: 450780436467452578}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: DragCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 7969859351244594113}
   - component: {fileID: 2777133310935051335}
   - component: {fileID: 8617577877439612939}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: ObjectTimer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 8323113416863417036}
   - component: {fileID: 7372522351316991907}
   - component: {fileID: 1586178436987266060}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: ObjectCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 4561974197035990413}
   - component: {fileID: 5156046584361913915}
   - component: {fileID: 3914690945455716990}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: PlayerDetection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,7 +420,7 @@ GameObject:
   - component: {fileID: 2165235832346834237}
   - component: {fileID: 5764349853801555569}
   - component: {fileID: 2042486511698574131}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: ObjectVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -538,7 +538,7 @@ GameObject:
   - component: {fileID: 7655114480102218331}
   - component: {fileID: 1127580103702388174}
   - component: {fileID: 6467113850753886054}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: LargePlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}

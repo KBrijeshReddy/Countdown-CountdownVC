@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8034883172980530320}
   - component: {fileID: 8745527214058630259}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: DragCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 1156531208131670561}
   - component: {fileID: 463964867310362846}
   - component: {fileID: 5055845892637871507}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: MovingPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   m_Component:
   - component: {fileID: 422222356417314050}
   - component: {fileID: 4643100873532848413}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: ObjectVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -4808,6 +4808,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2115421283}
     m_Modifications:
+    - target: {fileID: 365882552856917711, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 722581169902810170, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3798694684811438968, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
       propertyPath: buyArea
       value: 
@@ -4816,6 +4824,10 @@ PrefabInstance:
       propertyPath: gridManager
       value: 
       objectReference: {fileID: 1715403018}
+    - target: {fileID: 6121866550491602572, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6190001092874750124, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4856,9 +4868,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7282414323089076559, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8131182742429611132, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8641821458753155479, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
       propertyPath: m_Name
       value: LargePlatform
+      objectReference: {fileID: 0}
+    - target: {fileID: 8641821458753155479, guid: f3bda9f8c7ed3964fa294414338d32df, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
