@@ -73,7 +73,7 @@ MonoBehaviour:
   deceleration: 70
   jumpHeight: 5.5
   gravityStrength: 70
-  jumpCutMultiplier: 1
+  jumpCutMultiplier: 0.5
   fallGravityMultiplier: 1
   coyoteTime: 0.1
   jumpBufferTime: 0.1
