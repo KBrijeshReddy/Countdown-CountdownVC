@@ -88,6 +88,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3847243056037304928}
   - component: {fileID: 4144296617625867823}
+  - component: {fileID: 3886730307201094744}
+  - component: {fileID: 8983572389611753557}
   m_Layer: 3
   m_Name: PreExsisitngDoor
   m_TagString: Untagged
@@ -128,6 +130,32 @@ MonoBehaviour:
   closedColor: {r: 1, g: 1, b: 1, a: 1}
   openColor: {r: 0.93551636, g: 1, b: 0, a: 1}
   doorCollider: {fileID: 2794330452787635268}
+--- !u!114 &3886730307201094744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5880063928471278127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9dec224bc7eb784f823fbaa457861c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StaticGridOccupant
+--- !u!114 &8983572389611753557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5880063928471278127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2af5424bfa9c1f2409b63103b5aac44b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridFootprint
+  width: 1
+  height: 3
 --- !u!1 &8996862904043298363
 GameObject:
   m_ObjectHideFlags: 0
