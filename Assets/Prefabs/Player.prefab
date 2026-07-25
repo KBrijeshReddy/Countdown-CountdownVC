@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6323533444803784267}
   - component: {fileID: 2399862558472740453}
   - component: {fileID: 4650007868600423893}
+  - component: {fileID: 2948595474216862721}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -180,6 +181,28 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.5, y: 2.5}
   m_EdgeRadius: 0
+--- !u!95 &2948595474216862721
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027697452838038389}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6601765288121296813
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,6 +214,7 @@ GameObject:
   - component: {fileID: 5286319118236216953}
   - component: {fileID: 8184124404952996952}
   - component: {fileID: 2067394964176242934}
+  - component: {fileID: 6597918678582226575}
   m_Layer: 6
   m_Name: PlayerVisual
   m_TagString: Untagged
@@ -295,6 +319,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6597918678582226575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6601765288121296813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7150bab8041089d4989991edd1f1e820, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
+  movementThresholdToFlip: 0.1
 --- !u!1 &6709923842497609043
 GameObject:
   m_ObjectHideFlags: 0
