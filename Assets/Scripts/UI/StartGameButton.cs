@@ -1,8 +1,11 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class StartGameButton : MonoBehaviour
 {
     [SerializeField] private LevelManager levelManager;
+    [SerializeField] private GameObject text;
 
     public void StartGame()
     {
@@ -13,6 +16,10 @@ public class StartGameButton : MonoBehaviour
         }
 
         levelManager.StartPuzzle();
-        gameObject.SetActive(false);
+
+        gameObject.GetComponent<Button>().image.color = new Color(0f, 0f, 0f, 0f);
+        text.SetActive(false);
+        
+        // gameObject.SetActive(false);
     }
 }

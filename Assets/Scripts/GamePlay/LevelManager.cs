@@ -31,7 +31,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Button startButton;
 
     [Header("Player")]
-    [SerializeField] private MonoBehaviour playerMovementScript;
+    [SerializeField] private PlayerController playerMovementScript;
     [SerializeField] private Collider2D playerCollider;
 
     [Header("Grid")]
@@ -205,6 +205,7 @@ public class LevelManager : MonoBehaviour
         );
 
         UpdateTimerUI();
+        playerMovementScript.DisablePlayerMovement();
     }
 
     private void SetPlayerMovement(bool active)

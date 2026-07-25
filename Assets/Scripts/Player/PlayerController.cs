@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float acceleration = 80f;
     [SerializeField] private float deceleration = 100f;
+    [SerializeField] private float damageTimer = 0.5f;
 
     [Header("Jump")]
     [SerializeField] private float jumpHeight = 5f;
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private const float GroundStickVelocity = -2f;
 
     private bool IsBuyPhase => LevelManager.Instance != null && LevelManager.Instance.IsBuyingPhase();
+    private float currentDamageTimer = 0;
 
     private void Awake()
     {
@@ -54,8 +56,15 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ApplyMovement();
         ApplyGravity();
+        if (currentDamageTimer < 0.1f)
+        {
+            ApplyMovement();
+        }
+        else
+        {
+            currentDamageTimer -= Time.deltaTime;
+        }
     }
 
     private void ReadInput()
@@ -176,5 +185,10 @@ public class PlayerController : MonoBehaviour
 
         CameraShake.Instance?.Shake(blockedShakeDuration, blockedShakeMagnitude);
         blockedShakeTimer = blockedShakeCooldown;
+    }
+
+    public void DisablePlayerMovement()
+    {
+        currentDamageTimer = damageTimer;
     }
 }
