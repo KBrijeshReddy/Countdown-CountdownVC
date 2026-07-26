@@ -175,6 +175,7 @@ MonoBehaviour:
   playerMovementScript: {fileID: 1141964964}
   playerCollider: {fileID: 1141964967}
   gridManager: {fileID: 1715403018}
+  levelMusic: {fileID: 0}
 --- !u!114 &12760553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,6 +565,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 985150033826618083, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628704279464751690, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.5
@@ -604,13 +609,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2936394367530497074, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
+      propertyPath: connectedDoor
+      value: 
+      objectReference: {fileID: 963898043}
+    - target: {fileID: 2936394367530497074, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
+      propertyPath: normalColor.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3403889821313606480, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.14
       objectReference: {fileID: 0}
     - target: {fileID: 7623277063154719672, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
       propertyPath: m_Name
-      value: PreExisistingButton (1)
+      value: PreButton (A)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5127,7 +5140,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3847243056037304928, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.4
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 3847243056037304928, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5165,15 +5178,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4133853477619300035, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144296617625867823, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
+      propertyPath: closedColor.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5880063928471278127, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
       propertyPath: m_Name
-      value: PreExsisitngDoor
+      value: PreDoor (A)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
+--- !u!114 &963898043 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4144296617625867823, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
+  m_PrefabInstance: {fileID: 963898042}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fa154edf3179647aa60fe67b84a8af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorObject
 --- !u!1 &978541392
 GameObject:
   m_ObjectHideFlags: 0
@@ -5416,15 +5448,91 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4133853477619300035, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144296617625867823, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
+      propertyPath: closedColor.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5880063928471278127, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
       propertyPath: m_Name
-      value: PreExsisitngDoor (1)
+      value: PreDoor (B)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
+--- !u!114 &1099759592 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4144296617625867823, guid: a04015744382f7e45ab89c9c7fb6dda3, type: 3}
+  m_PrefabInstance: {fileID: 1099759591}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fa154edf3179647aa60fe67b84a8af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorObject
+--- !u!1001 &1109308731
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 25.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -7.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408250444076186578, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609460614677247892, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
+      propertyPath: m_Name
+      value: Laser
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d3372026dfe46bc429c93ed5dfc2a25a, type: 3}
 --- !u!1001 &1124966161
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5658,6 +5766,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 985150033826618083, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628704279464751690, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.45
@@ -5698,9 +5810,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 2936394367530497074, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
+      propertyPath: connectedDoor
+      value: 
+      objectReference: {fileID: 1099759592}
+    - target: {fileID: 2936394367530497074, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
+      propertyPath: normalColor.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7623277063154719672, guid: e4f2b0844734d28488bbc6c61bcced6f, type: 3}
       propertyPath: m_Name
-      value: PreExisistingButton
+      value: PreButton (B)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12234,8 +12354,9 @@ SceneRoots:
   - {fileID: 896706172}
   - {fileID: 1124966161}
   - {fileID: 938465763}
+  - {fileID: 1109308731}
   - {fileID: 1229238518}
   - {fileID: 963898042}
   - {fileID: 1099759591}
-  - {fileID: 1356607414}
   - {fileID: 411819224}
+  - {fileID: 1356607414}
