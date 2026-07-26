@@ -151,5 +151,24 @@ public class StartGameButton : MonoBehaviour
 
         if (text != null)
             text.SetActive(true);
+
+        // A restart can happen while the warning/jitter from a previous
+        // blocked click is still playing out — clear both so they don't
+        // linger into the fresh Buy Phase.
+        if (jitterRoutine != null)
+        {
+            StopCoroutine(jitterRoutine);
+            jitterRoutine = null;
+            rectTransform.anchoredPosition = originalAnchoredPosition;
+        }
+
+        if (warningRoutine != null)
+        {
+            StopCoroutine(warningRoutine);
+            warningRoutine = null;
+        }
+
+        if (warningText != null)
+            warningText.gameObject.SetActive(false);
     }
 }
