@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652591448e0d1fc459a8136c0e51f097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonObject
-  activeDuration: 3
+  activeDuration: 10
   connectedDoor: {fileID: 0}
   triggerZone: {fileID: 6934855970506739128}
   animatorVisual: {fileID: 281643744947205279}
