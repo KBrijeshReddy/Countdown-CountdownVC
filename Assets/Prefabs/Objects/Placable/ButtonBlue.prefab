@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8219712056779057183}
   - component: {fileID: 3410242643093225807}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: DragCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 7215802123876260589}
   - component: {fileID: 5950950883927901512}
   - component: {fileID: 4309096446159713307}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: ButtonBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,9 +133,11 @@ MonoBehaviour:
   footprint: {fileID: 6729649230213371989}
   dragCollider: {fileID: 3410242643093225807}
   pickupScale: 1.08
+  occupantBlockingLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  overlapCheckShrink: 0.9
   visual: {fileID: 985150033826618083}
-  visualTwo: {fileID: 0}
-  visualThree: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   validColor: {r: 0, g: 1, b: 0, a: 1}
   invalidColor: {r: 1, g: 0, b: 0, a: 1}
@@ -224,7 +226,7 @@ GameObject:
   - component: {fileID: 7019437169617733105}
   - component: {fileID: 3882502602021258581}
   - component: {fileID: 6934855970506739128}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: PlayerDetection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -315,7 +317,7 @@ GameObject:
   - component: {fileID: 3403889821313606480}
   - component: {fileID: 985150033826618083}
   - component: {fileID: 281643744947205279}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: ObjectVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -3,7 +3,13 @@ using UnityEngine;
 [RequireComponent(typeof(GridFootprint))]
 public class PlacementRule : MonoBehaviour
 {
-    public enum RuleType { None, RequiresFloorSupport, RequiresAnySupport }
+    public enum RuleType
+    {
+        None,
+        RequiresFloorSupport,
+        RequiresAnySupport,
+        RequiresFloorAndCeilingSupport
+    }
 
     [SerializeField] private RuleType ruleType = RuleType.None;
     [SerializeField] private LayerMask supportLayer;
@@ -17,9 +23,6 @@ public class PlacementRule : MonoBehaviour
     private void Awake()
     {
         footprint = GetComponent<GridFootprint>();
-
-        // Includes colliders on child objects (DragCollider, PlayerDetection, etc.)
-        // so the support raycast can never register a false hit against itself.
         ownColliders = GetComponentsInChildren<Collider2D>();
     }
 
@@ -34,27 +37,28 @@ public class PlacementRule : MonoBehaviour
         Vector2 worldCenter = gridManager.ObjectGridToWorld(bottomLeftCell, footprint);
         Vector2 footprintWorldSize = new Vector2(footprint.Size.x, footprint.Size.y) * gridManager.CellSize;
 
-        LastDetectedSide = DetectSupportIgnoringSelf(worldCenter, footprintWorldSize);
+        SetOwnCollidersEnabled(false);
+        bool isValid = EvaluateRule(worldCenter, footprintWorldSize);
+        SetOwnCollidersEnabled(true);
 
-        if (LastDetectedSide == SurfaceSupport.Side.None)
-            return false;
+        return isValid;
+    }
+
+    private bool EvaluateRule(Vector2 worldCenter, Vector2 footprintWorldSize)
+    {
+        if (ruleType == RuleType.RequiresFloorAndCeilingSupport)
+        {
+            bool supported = SurfaceSupport.HasFloorAndCeilingSupport(worldCenter, footprintWorldSize, supportLayer, raycastMargin);
+            LastDetectedSide = supported ? SurfaceSupport.Side.Floor : SurfaceSupport.Side.None;
+            return supported;
+        }
+
+        LastDetectedSide = SurfaceSupport.DetectSupport(worldCenter, footprintWorldSize, supportLayer, raycastMargin);
 
         if (ruleType == RuleType.RequiresFloorSupport)
             return LastDetectedSide == SurfaceSupport.Side.Floor;
 
-        return true; // RequiresAnySupport
-    }
-
-    private SurfaceSupport.Side DetectSupportIgnoringSelf(Vector2 worldCenter, Vector2 footprintWorldSize)
-    {
-        SetOwnCollidersEnabled(false);
-
-        SurfaceSupport.Side result =
-            SurfaceSupport.DetectSupport(worldCenter, footprintWorldSize, supportLayer, raycastMargin);
-
-        SetOwnCollidersEnabled(true);
-
-        return result;
+        return LastDetectedSide != SurfaceSupport.Side.None; // RequiresAnySupport
     }
 
     private void SetOwnCollidersEnabled(bool enabled)

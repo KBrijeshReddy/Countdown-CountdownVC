@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8988324245876814342}
   - component: {fileID: 2794330452787635268}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: DragCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 4144296617625867823}
   - component: {fileID: 3886730307201094744}
   - component: {fileID: 8983572389611753557}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: PreExsisitngDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9dec224bc7eb784f823fbaa457861c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StaticGridOccupant
+  referenceCollider: {fileID: 0}
 --- !u!114 &8983572389611753557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,7 +167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5556379909101384565}
   - component: {fileID: 4133853477619300035}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: ObjectVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

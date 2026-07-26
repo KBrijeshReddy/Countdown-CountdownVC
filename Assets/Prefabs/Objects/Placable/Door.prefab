@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8988324245876814342}
   - component: {fileID: 2794330452787635268}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: DragCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 4144296617625867823}
   - component: {fileID: 7332250675099418914}
   - component: {fileID: 4590505717047703895}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,9 +131,11 @@ MonoBehaviour:
   footprint: {fileID: 5789833220484037842}
   dragCollider: {fileID: 2794330452787635268}
   pickupScale: 1.08
+  occupantBlockingLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  overlapCheckShrink: 0.9
   visual: {fileID: 4133853477619300035}
-  visualTwo: {fileID: 0}
-  visualThree: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   validColor: {r: 0, g: 1, b: 0, a: 1}
   invalidColor: {r: 1, g: 0, b: 0, a: 1}
@@ -207,7 +209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5556379909101384565}
   - component: {fileID: 4133853477619300035}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: ObjectVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -10,10 +10,14 @@ public class PlaceableDragHandler : MonoBehaviour
     [Header("Drag Feel")]
     [SerializeField] private float pickupScale = 1.08f;
 
+    [Header("Placement Overlap")]
+    [Tooltip("Placement is blocked if the footprint overlaps anything on this layer (e.g. buttons, doors) — checked with physics, independent of grid bookkeeping.")]
+    [SerializeField] private LayerMask occupantBlockingLayer;
+    [Range(0.5f, 1f)]
+    [SerializeField] private float overlapCheckShrink = 0.9f;
+
     [Header("Visual")]
     [SerializeField] private SpriteRenderer visual;
-    [SerializeField] private SpriteRenderer visualTwo;
-    [SerializeField] private SpriteRenderer visualThree;
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color validColor = new Color(0.5f, 1f, 0.5f);
     [SerializeField] private Color invalidColor = new Color(1f, 0.5f, 0.5f);
@@ -22,6 +26,7 @@ public class PlaceableDragHandler : MonoBehaviour
     private PlacementRule placementRule;
     private SurfaceMountRotator surfaceMountRotator;
     private Camera mainCamera;
+    private Collider2D[] ownColliders;
 
     private Vector3 originalScale;
     private Vector3 buyAreaPosition;
@@ -48,6 +53,8 @@ public class PlaceableDragHandler : MonoBehaviour
         mainCamera = Camera.main;
         originalScale = transform.localScale;
         buyAreaPosition = transform.position;
+
+        ownColliders = GetComponentsInChildren<Collider2D>();
 
         if (dragCollider == null)
         {
@@ -141,10 +148,37 @@ public class PlaceableDragHandler : MonoBehaviour
         }
 
         previewGridPosition = GridManager.Instance.WorldToObjectGrid(transform.position, footprint);
-        previewValid = GridManager.Instance.CanPlaceObject(previewGridPosition, footprint);
+
+        previewValid = GridManager.Instance.CanPlaceObject(previewGridPosition, footprint)
+            && !IsOverlappingOccupant();
 
         SetVisualColor(previewValid ? validColor : invalidColor);
         ApplySurfaceRotation();
+    }
+
+    /// Physics-based overlap check against buttons/doors — independent
+    /// of GridManager's occupied-cell bookkeeping, so it can't be
+    /// thrown off by grid/pivot alignment issues.
+    private bool IsOverlappingOccupant()
+    {
+        if (occupantBlockingLayer == 0)
+            return false;
+
+        Vector2 size = new Vector2(footprint.Size.x, footprint.Size.y)
+            * GridManager.Instance.CellSize
+            * overlapCheckShrink;
+
+        Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, size, 0f, occupantBlockingLayer);
+
+        foreach (Collider2D hit in hits)
+        {
+            if (System.Array.IndexOf(ownColliders, hit) >= 0)
+                continue; // ignore self
+
+            return true;
+        }
+
+        return false;
     }
 
     private void FinishDrag()
@@ -220,14 +254,7 @@ public class PlaceableDragHandler : MonoBehaviour
 
     private void ApplySurfaceRotation()
     {
-        if (placementRule == null) return;
-
-        if (surfaceMountRotator == null)
-        {
-            Debug.LogWarning($"{name}: has a PlacementRule but no SurfaceMountRotator component — visual won't rotate to match its surface.");
-            return;
-        }
-
+        if (surfaceMountRotator == null || placementRule == null) return;
         surfaceMountRotator.ApplyRotation(placementRule.LastDetectedSide);
     }
 
@@ -240,7 +267,5 @@ public class PlaceableDragHandler : MonoBehaviour
     private void SetVisualColor(Color color)
     {
         if (visual != null) visual.color = color;
-        if (visualTwo != null) visualTwo.color = color;
-        if (visualThree != null) visualThree.color = color;
     }
 }

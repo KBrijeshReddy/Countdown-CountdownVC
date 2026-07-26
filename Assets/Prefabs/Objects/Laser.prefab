@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5690286875755256458}
   - component: {fileID: 6712523564215548585}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8923166783101582236}
   - component: {fileID: 7551172604292405707}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ObjectVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 8060576351221727678}
   - component: {fileID: 2425084737444049050}
   - component: {fileID: 8049340271445752513}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ MonoBehaviour:
   maxRange: 100
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 392
+    m_Bits: 904
   playerLayer:
     serializedVersion: 2
     m_Bits: 64

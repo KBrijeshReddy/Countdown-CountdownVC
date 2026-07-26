@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// Shared physics-based surface detection. Used by PlacementRule to
-/// validate an object has something to rest against, and by
-/// SurfaceMountRotator to orient a visual to match that surface.
 public static class SurfaceSupport
 {
     public enum Side { None, Floor, Ceiling, LeftWall, RightWall }
@@ -16,7 +13,6 @@ public static class SurfaceSupport
         float halfWidth = footprintWorldSize.x / 2f;
         float halfHeight = footprintWorldSize.y / 2f;
 
-        // Priority order: floor first (most common case), then walls, then ceiling.
         if (Physics2D.Raycast(worldCenter, Vector2.down, halfHeight + checkDistance, supportLayer))
             return Side.Floor;
 
@@ -30,6 +26,22 @@ public static class SurfaceSupport
             return Side.Ceiling;
 
         return Side.None;
+    }
+
+    /// True only if there's support directly above AND below —
+    /// used for objects (like doors) that must sit wedged in a gap.
+    public static bool HasFloorAndCeilingSupport(
+        Vector2 worldCenter,
+        Vector2 footprintWorldSize,
+        LayerMask supportLayer,
+        float checkDistance)
+    {
+        float halfHeight = footprintWorldSize.y / 2f;
+
+        bool hasFloor = Physics2D.Raycast(worldCenter, Vector2.down, halfHeight + checkDistance, supportLayer);
+        bool hasCeiling = Physics2D.Raycast(worldCenter, Vector2.up, halfHeight + checkDistance, supportLayer);
+
+        return hasFloor && hasCeiling;
     }
 
     public static Quaternion GetRotationForSide(Side side)
