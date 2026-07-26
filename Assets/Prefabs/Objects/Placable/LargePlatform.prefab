@@ -677,11 +677,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
   footprint: {fileID: 7906325181262957807}
-  dragCollider: {fileID: 0}
+  dragCollider: {fileID: 598581588612568166}
   pickupScale: 1.08
+  occupantBlockingLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  overlapCheckShrink: 0.9
   visual: {fileID: 5764349853801555569}
   visualTwo: {fileID: 6592086435081465506}
-  visualThree: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   validColor: {r: 0, g: 1, b: 0, a: 1}
   invalidColor: {r: 1, g: 0, b: 0, a: 1}
