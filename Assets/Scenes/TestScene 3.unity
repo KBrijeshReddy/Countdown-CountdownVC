@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   currentPhase: 0
-  startingTime: 200
+  startingTime: 10
   timerText: {fileID: 1241602555}
   idealCompletionTime: 30
   baseBonusTime: 12

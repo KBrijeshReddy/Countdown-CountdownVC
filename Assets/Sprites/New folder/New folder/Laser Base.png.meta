@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 4f6b7f2b01ac8334da15c2f0dee7c1b0
+guid: ee975cf0f339586419bd6485a57d4459
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3027428980894049699
-    second: Hell Floor Outward Tiles Left Corner Top_0
+      213: 5615907726488874596
+    second: Laser Base_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,67 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Hell Floor Outward Tiles Left Corner Top_0
+      name: Laser Base_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 16
-        width: 16
-        height: 16
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d5a5613c1696cf5d0800000000000000
-      internalID: -3027428980894049699
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hell Floor Outward Tiles Left Corner Top_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 16
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5c2abd24b143fad4bab69f7375d8f9de
-      internalID: -1559146254
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hell Floor Outward Tiles Left Corner Top_2
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2e2e816bc6e947c4496478fa5ae68fee
-      internalID: -132498777
+      spriteID: 46eadb8a256bfed40800000000000000
+      internalID: 5615907726488874596
       vertices: []
       indices: 
       edges: []
@@ -195,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 53ad29a22b89e7e419785ecbc8b1505b
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -203,13 +159,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":16.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      Hell Floor Outward Tiles Left Corner Top_0: -3027428980894049699
-      Hell Floor Outward Tiles Left Corner Top_1: -1559146254
-      Hell Floor Outward Tiles Left Corner Top_2: -132498777
+      Laser Base_0: 5615907726488874596
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

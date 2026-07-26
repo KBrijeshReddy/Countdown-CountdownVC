@@ -163,8 +163,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ee1ddf9561e8a01468bc6ee75933d4d4
-      internalID: 2054729051
+      spriteID: b39fa71bd44548a41adc32fd7f670e1e
+      internalID: 986126424
       vertices: []
       indices: 
       edges: []
@@ -185,8 +185,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3352efbf2dd57bc4d93bebb1fbfd3793
-      internalID: -1661993005
+      spriteID: eeb87fbe7927be349a4ad5b232e1049a
+      internalID: -64380297
       vertices: []
       indices: 
       edges: []
@@ -195,7 +195,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0e841c1acb88b6f4c8eced15a539f1a4
+    spriteID: 14bc6abda7236eb4fa27bd570904d153
     internalID: 0
     vertices: []
     indices: 
@@ -208,8 +208,8 @@ TextureImporter:
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":16.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Hell Floor Inward Tiles Left Corner Top_0: 286634282082396719
-      Hell Floor Inward Tiles Left Corner Top_1: 2054729051
-      Hell Floor Inward Tiles Left Corner Top_2: -1661993005
+      Hell Floor Inward Tiles Left Corner Top_1: 986126424
+      Hell Floor Inward Tiles Left Corner Top_2: -64380297
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: Hell Floor Outward Tiles Left Corner Bottom_1
+  m_Name: Hell Floor Inward Tiles Left Corner Bottom_0
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
-  m_Sprite: {fileID: -1210386981, guid: 6506b27e4b6b8fa4b900b7fe89b7e14d, type: 3}
+  m_Sprite: {fileID: -9001939909488218840, guid: 165773a03f4c1ae4780438df66f69e1a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
