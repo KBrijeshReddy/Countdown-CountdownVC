@@ -18,6 +18,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float coyoteTime = 0.1f;
     [SerializeField] private float jumpBufferTime = 0.1f;
 
+    [Header("Jump Feel — Apex Hang")]
+    [Tooltip("Vertical speed range around zero considered 'near the apex' of a jump.")]
+    [SerializeField] private float apexThreshold = 2f;
+    [Tooltip("Gravity is multiplied by this while near the apex, for a brief floaty hang at the top of the jump.")]
+    [Range(0.1f, 1f)]
+    [SerializeField] private float apexGravityMultiplier = 0.6f;
+
     [Header("Blocked-Move Feedback")]
     [SerializeField] private float blockedShakeDuration = 0.05f;
     [SerializeField] private float blockedShakeMagnitude = 0.05f;
@@ -63,7 +70,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            currentDamageTimer -= Time.deltaTime;
+            currentDamageTimer -= Time.fixedDeltaTime;
         }
     }
 
@@ -146,26 +153,30 @@ public class PlayerController : MonoBehaviour
     {
         if (IsBuyPhase)
         {
-            // Player's collider is disabled during Buy Phase, so there's
-            // nothing to physically resolve contact with. Any nonzero
-            // velocity here would just integrate into position unopposed
-            // and the player would sink through the floor.
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             return;
         }
 
         if (groundSensor.IsGrounded && rb.linearVelocity.y <= 0f)
         {
-            // Small downward "stick" instead of zero keeps physics
-            // continuously resolving ground contact, preventing the
-            // player from floating just above a surface after landing.
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, GroundStickVelocity);
             return;
         }
 
         float gravity = gravityStrength;
-        if (rb.linearVelocity.y < 0f)
+
+        // Brief floaty hang right at the top of the jump, before falling
+        // gravity takes over — makes the arc feel less mechanical.
+        bool isNearApex = Mathf.Abs(rb.linearVelocity.y) < apexThreshold;
+
+        if (isNearApex)
+        {
+            gravity *= apexGravityMultiplier;
+        }
+        else if (rb.linearVelocity.y < 0f)
+        {
             gravity *= fallGravityMultiplier;
+        }
 
         rb.linearVelocity += Vector2.down * gravity * Time.fixedDeltaTime;
     }
