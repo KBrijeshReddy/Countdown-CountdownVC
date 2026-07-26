@@ -31,6 +31,8 @@ public class EndDoor : MonoBehaviour
 
         SetVisual(true);
 
+        AudioManager.Instance?.PlaySFX(SoundId.NextLevel);
+
         if (LevelManager.Instance != null)
             LevelManager.Instance.CompleteLevel(nextSceneName);
         else

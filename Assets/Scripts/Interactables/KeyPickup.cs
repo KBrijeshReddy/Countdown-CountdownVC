@@ -27,6 +27,8 @@ public class KeyPickup : MonoBehaviour
 
         inventory.CollectKey();
 
+        AudioManager.Instance?.PlaySFX(SoundId.KeyCollect);
+
         // Subscribed here (not Awake) since the player reference is only
         // available once the player actually reaches the key. Stays
         // subscribed while inactive so it can hear the reset event.

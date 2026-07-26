@@ -37,6 +37,8 @@ public class SpikeHazard : MonoBehaviour
 
         cooldownTimer = triggerCooldown;
 
+        AudioManager.Instance?.PlaySFX(SoundId.SpikeDamage);
+
         levelManager?.RemoveTime(timePenalty);
 
         if (!teleportPlayer)

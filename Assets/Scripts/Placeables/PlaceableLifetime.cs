@@ -74,6 +74,9 @@ public class PlaceableLifetime : MonoBehaviour
         if (dragHandler != null && !dragHandler.IsPlacedOnGrid) return;
 
         TimerStarted = true;
+
+        AudioManager.Instance?.PlaySFX(SoundId.BreakableTimerStart);
+
         RemainingTime = lifetime;
 
         if (animatorVisual != null)
@@ -97,6 +100,8 @@ public class PlaceableLifetime : MonoBehaviour
     /// it started.
     private void BreakObject()
     {
+         AudioManager.Instance?.PlaySFX(SoundId.PlatformBreak);
+
         if (animatorVisual != null)
             animatorVisual.SetBool("TileBreaking", false);
 

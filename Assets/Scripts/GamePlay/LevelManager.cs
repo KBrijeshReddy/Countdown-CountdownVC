@@ -37,6 +37,9 @@ public class LevelManager : MonoBehaviour
     [Header("Grid")]
     [SerializeField] private GridManager gridManager;
 
+    [Header("Music")]
+    [SerializeField] private AudioClip levelMusic;
+
     private float remainingTime;
     private float levelStartingTime;
     private float puzzlePhaseStartingTime;
@@ -67,6 +70,9 @@ public event Action LevelRestarted;
 
     private void Start()
     {
+        if (levelMusic != null)
+    AudioManager.Instance?.PlayMusic(levelMusic);
+
         currentPhase = GamePhase.Buying;
 
         remainingTime = GameSession.Instance != null && GameSession.Instance.HasCarriedTime
@@ -260,6 +266,7 @@ public void RestartLevel()
     {
         EnsureGameSession();
         GameSession.Instance.SetCarriedTime(levelStartingTime);
+        AudioManager.Instance?.PlaySFX(SoundId.Death);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

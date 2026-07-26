@@ -12,6 +12,8 @@ public class Door : MonoBehaviour
 
     private LevelManager levelManager;
 
+    private bool isOpen;
+
     private void Awake() => SetOpen(false);
 
     private void OnEnable() => SubscribeToLevelManager();
@@ -39,6 +41,11 @@ public class Door : MonoBehaviour
 
     public void SetOpen(bool open)
     {
+        if (open != isOpen)
+        AudioManager.Instance?.PlaySFX(open ? SoundId.DoorOpen : SoundId.DoorClose);
+
+        isOpen = open;
+
         if (visual != null)
             visual.color = open ? openColor : closedColor;
 
