@@ -138,6 +138,7 @@ MonoBehaviour:
     m_Bits: 512
   overlapCheckShrink: 0.9
   visual: {fileID: 985150033826618083}
+  visualTwo: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   validColor: {r: 0, g: 1, b: 0, a: 1}
   invalidColor: {r: 1, g: 0, b: 0, a: 1}
@@ -203,6 +204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableObject
   cost: 10
+  isRequiredForLevel: 1
 --- !u!114 &4309096446159713307
 MonoBehaviour:
   m_ObjectHideFlags: 0

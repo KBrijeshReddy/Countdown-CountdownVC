@@ -4,7 +4,11 @@ public class Purchasable : MonoBehaviour
 {
     [SerializeField] private float cost = 10f;
 
+    [Tooltip("If true, the puzzle can't start until this object has been placed on the grid at least once.")]
+    [SerializeField] private bool isRequiredForLevel = false;
+
     public float Cost => cost;
+    public bool IsRequiredForLevel => isRequiredForLevel;
     public bool IsPurchased { get; private set; }
 
     public bool TryBuy()

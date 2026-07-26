@@ -200,6 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableObject
   cost: 10
+  isRequiredForLevel: 1
 --- !u!1 &8996862904043298363
 GameObject:
   m_ObjectHideFlags: 0
