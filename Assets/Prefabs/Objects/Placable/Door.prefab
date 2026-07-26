@@ -136,6 +136,7 @@ MonoBehaviour:
     m_Bits: 512
   overlapCheckShrink: 0.9
   visual: {fileID: 4133853477619300035}
+  visualTwo: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   validColor: {r: 0, g: 1, b: 0, a: 1}
   invalidColor: {r: 1, g: 0, b: 0, a: 1}
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b93f12cc6f47243956cced6aab2f87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlacementRule
-  ruleType: 1
+  ruleType: 3
   supportLayer:
     serializedVersion: 2
     m_Bits: 136
