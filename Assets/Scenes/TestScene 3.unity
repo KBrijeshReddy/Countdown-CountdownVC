@@ -176,6 +176,8 @@ MonoBehaviour:
   playerCollider: {fileID: 1141964967}
   gridManager: {fileID: 1715403018}
   levelMusic: {fileID: 0}
+  isFinalLevel: 0
+  winSceneName: Win
 --- !u!114 &12760553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9988,7 +9990,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2494474633157053507, guid: f1ca9316bfa80934fbf7fe8bf0c376b9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.58
+      value: -2.35
       objectReference: {fileID: 0}
     - target: {fileID: 2494474633157053507, guid: f1ca9316bfa80934fbf7fe8bf0c376b9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10787,11 +10789,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7445963753086658776, guid: 4a3ea13c6fe504e459966027e7345ee9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.44
+      value: -12.78
       objectReference: {fileID: 0}
     - target: {fileID: 7445963753086658776, guid: 4a3ea13c6fe504e459966027e7345ee9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -11.74
+      value: -2.37
       objectReference: {fileID: 0}
     - target: {fileID: 7445963753086658776, guid: 4a3ea13c6fe504e459966027e7345ee9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10823,6 +10825,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7445963753086658776, guid: 4a3ea13c6fe504e459966027e7345ee9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680855089211293987, guid: 4a3ea13c6fe504e459966027e7345ee9, type: 3}
+      propertyPath: m_Size.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680855089211293987, guid: 4a3ea13c6fe504e459966027e7345ee9, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8623653351190549965, guid: 4a3ea13c6fe504e459966027e7345ee9, type: 3}
+      propertyPath: openDelay
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

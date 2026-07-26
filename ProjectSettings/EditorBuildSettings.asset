@@ -9,10 +9,31 @@ EditorBuildSettings:
     path: Assets/Scenes/TestScene.unity
     guid: 1112239671693ea44b702493a4dbfa07
   - enabled: 1
-    path: Assets/Scenes/TestScene 3.unity
-    guid: ad310f9fd172ef24d9c805e41f4e98e9
+    path: Assets/Scenes/Menu.unity
+    guid: df87203d2bfe4bb4cae1fb0df4f76739
   - enabled: 1
-    path: Assets/Scenes/abc.unity
-    guid: 80ce21d7647a63c41af94611a02d169b
+    path: Assets/Scenes/Levels/Level1.unity
+    guid: 8f43ebe134a06aa4fb46710ec688e50f
+  - enabled: 1
+    path: Assets/Scenes/Levels/Level2.unity
+    guid: 3da94e8954fccdb419277387c93d9b97
+  - enabled: 1
+    path: Assets/Scenes/Levels/Level3.unity
+    guid: e49369e97f965594eacc278636f7b1e3
+  - enabled: 1
+    path: Assets/Scenes/Levels/Level4.unity
+    guid: 91ad484d5cb7d474fa0c1d55ffa6c7fb
+  - enabled: 1
+    path: Assets/Scenes/Levels/Maze_Level_Fr.unity
+    guid: 9e2a11217e6e6384aa555eaa8f829896
+  - enabled: 1
+    path: Assets/Scenes/Levels/Parkour Level.unity
+    guid: dec89dfde466add46876f12aa17fc675
+  - enabled: 1
+    path: Assets/Scenes/Levels/final_level.unity
+    guid: 9c67c203905a15f4a9eec05668fe37e6
+  - enabled: 1
+    path: Assets/Scenes/Levels/Win.unity
+    guid: 86914f57a6897ad4dbf01653da99b977
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

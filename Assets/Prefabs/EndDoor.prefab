@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1321677338747951795}
   - component: {fileID: 1480390808903276621}
+  - component: {fileID: 5880683815041686057}
   m_Layer: 0
   m_Name: EndDoorVisual
   m_TagString: Untagged
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+  m_Sprite: {fileID: 2774111426448763615, guid: 76e7c441e8910a24c84049bb748748fa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -92,6 +93,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!95 &5880683815041686057
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3610681581110284669}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7925175b1b12106468424deb2587f656, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6318435002588269496
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,6 +126,8 @@ GameObject:
   - component: {fileID: 7445963753086658776}
   - component: {fileID: 7680855089211293987}
   - component: {fileID: 8623653351190549965}
+  - component: {fileID: 1435264091908392149}
+  - component: {fileID: 7684853645358389999}
   m_Layer: 0
   m_Name: EndDoor
   m_TagString: Untagged
@@ -170,7 +195,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.8, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &8623653351190549965
 MonoBehaviour:
@@ -188,3 +213,32 @@ MonoBehaviour:
   visual: {fileID: 1480390808903276621}
   lockedColor: {r: 1, g: 1, b: 1, a: 1}
   unlockedColor: {r: 0, g: 1, b: 0, a: 1}
+  animatorVisual: {fileID: 5880683815041686057}
+  openDelay: 0.5
+--- !u!114 &1435264091908392149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6318435002588269496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2af5424bfa9c1f2409b63103b5aac44b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridFootprint
+  width: 2
+  height: 3
+--- !u!114 &7684853645358389999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6318435002588269496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9dec224bc7eb784f823fbaa457861c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StaticGridOccupant
+  referenceCollider: {fileID: 7680855089211293987}
