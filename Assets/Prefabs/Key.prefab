@@ -240,8 +240,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2494474633157053507}
-  - component: {fileID: 3221371494248082042}
   - component: {fileID: 2868746904096712754}
+  - component: {fileID: 5655235612361596100}
+  - component: {fileID: 5284484117244598484}
+  - component: {fileID: 427042961666959522}
   m_Layer: 0
   m_Name: Key
   m_TagString: Untagged
@@ -259,15 +261,27 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.57, y: -11.59, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4865604646426400735}
   - {fileID: 458291007144621777}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!60 &3221371494248082042
-PolygonCollider2D:
+--- !u!114 &2868746904096712754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6783295974474356372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c6813622521d234b9561c1b8e7326e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
+--- !u!61 &5655235612361596100
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -310,15 +324,9 @@ PolygonCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.00028455257, y: 0.25620937}
-      - {x: -0.49537307, y: -0.0006887615}
-      - {x: -0.00267905, y: -0.25481498}
-      - {x: 0.5033158, y: -0.0014054775}
-      - {x: 0.22585475, y: 0.14419836}
-  m_UseDelaunayMesh: 1
---- !u!114 &2868746904096712754
+  m_Size: {x: 0.5, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &5284484117244598484
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -327,6 +335,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 6783295974474356372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c6813622521d234b9561c1b8e7326e7, type: 3}
+  m_Script: {fileID: 11500000, guid: 2af5424bfa9c1f2409b63103b5aac44b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
+  m_EditorClassIdentifier: Assembly-CSharp::GridFootprint
+  width: 1
+  height: 2
+--- !u!114 &427042961666959522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6783295974474356372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9dec224bc7eb784f823fbaa457861c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StaticGridOccupant
+  referenceCollider: {fileID: 5655235612361596100}
