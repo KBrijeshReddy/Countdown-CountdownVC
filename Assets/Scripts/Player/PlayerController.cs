@@ -147,6 +147,7 @@ public class PlayerController : MonoBehaviour
     {
         float jumpVelocity = Mathf.Sqrt(2f * gravityStrength * jumpHeight);
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpVelocity);
+        AudioManager.Instance?.PlaySFX(SoundId.PlayerJump);
     }
 
     private void ApplyGravity()

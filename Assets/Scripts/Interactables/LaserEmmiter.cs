@@ -115,6 +115,8 @@ public class LaserEmitter : MonoBehaviour
 
         damageTickTimer = damageTickInterval;
 
+        AudioManager.Instance?.PlaySFX(SoundId.LaserDamage);
+
         levelManager?.RemoveTime(timePenalty);
 
         PlayerCheckpoint checkpoint = playerCollider.GetComponentInParent<PlayerCheckpoint>();
@@ -127,6 +129,9 @@ public class LaserEmitter : MonoBehaviour
 
     private void SetBeamVisible(bool visible)
     {
+        if (visible && !lineRenderer.enabled)
+            AudioManager.Instance?.PlaySFX(SoundId.LaserFire);
+
         lineRenderer.enabled = visible;
     }
 

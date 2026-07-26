@@ -89,6 +89,9 @@ public class PressureButton : MonoBehaviour
     {
         isPressed = pressed;
 
+        if (pressed)
+        AudioManager.Instance?.PlaySFX(SoundId.ButtonPress);
+
         if (animatorVisual != null)
         {
             if (pressed)

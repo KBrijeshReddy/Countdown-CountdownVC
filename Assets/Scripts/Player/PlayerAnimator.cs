@@ -66,6 +66,9 @@ public class PlayerAnimator : MonoBehaviour
 
         UpdateFacing(rb.linearVelocity.x);
         UpdateSquash();
+
+        bool isWalking = groundSensor.IsGrounded && horizontalSpeed > movementThresholdToFlip;
+        AudioManager.Instance?.SetLoopingSound(SoundId.PlayerWalk, isWalking);
     }
 
     private void UpdateFacing(float horizontalVelocity)
@@ -81,6 +84,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         isSquashing = true;
         squashTimer = 0f;
+        AudioManager.Instance?.PlaySFX(SoundId.PlayerLand);
     }
 
     private void UpdateSquash()
