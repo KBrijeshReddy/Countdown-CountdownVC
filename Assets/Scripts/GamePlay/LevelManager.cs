@@ -40,6 +40,11 @@ public class LevelManager : MonoBehaviour
     [Header("Music")]
     [SerializeField] private AudioClip levelMusic;
 
+    [Header("Level Flow")]
+    [Tooltip("Check this on the final level. Completing it loads the Win scene instead of the next level.")]
+    [SerializeField] private bool isFinalLevel = false;
+    [SerializeField] private string winSceneName = "Win";
+
     private float remainingTime;
     private float levelStartingTime;
     private float puzzlePhaseStartingTime;
@@ -147,6 +152,7 @@ public void RestartLevel()
     LevelRestarted?.Invoke();
 }
 
+    
     public void CompleteLevel(string nextSceneName = null)
     {
         if (timerRoutine != null)
@@ -157,8 +163,15 @@ public void RestartLevel()
         float carryOverTime = remainingTime + bonus;
 
         EnsureGameSession();
-        GameSession.Instance.SetCarriedTime(carryOverTime);
+        GameSession.Instance.AddTimeSpent(timeSpent);
 
+        if (isFinalLevel)
+        {
+            SceneManager.LoadScene(winSceneName);
+            return;
+        }
+
+        GameSession.Instance.SetCarriedTime(carryOverTime);
         LoadScene(nextSceneName);
     }
 
@@ -295,4 +308,5 @@ public void RestartLevel()
         var sessionObject = new GameObject("GameSession");
         sessionObject.AddComponent<GameSession>();
     }
+
 }
